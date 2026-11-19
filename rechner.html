@@ -98,6 +98,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
     <div class="form">
       <label for="meal">Mahlzeit<select id="meal"></select></label>
       <label for="grp">Gruppe<select id="grp"></select></label>
+      <label class="wide" for="search">Suchen (z. B. Chips, Cola, Pizza)<input id="search" type="search" placeholder="Lebensmittel oder Getränk suchen …" autocomplete="off"></label>
       <label class="wide" for="food">Lebensmittel / Getränk<select id="food"></select></label>
       <label for="unit">Einheit<select id="unit"></select></label>
       <label for="qty">Anzahl<input id="qty" type="number" min="0.5" step="0.5" value="1" inputmode="decimal"></label>
@@ -134,7 +135,7 @@ const LV=[
  {k:'suess',n:'Süsses, Salziges, Süssgetränke',u:'Portion (20 g / 2 dl)',tgt:1,lo:-1,hi:1.5,c:'--l6',tipLo:'',tipHi:'Zu viel Süsses, Salziges oder Süssgetränke. Empfohlen ist höchstens 1 kleine Portion pro Tag.'}
 ];
 /* Lebensmittel: c = Portionen pro Grundeinheit; u = Einheiten [Bezeichnung, Faktor] */
-const G=['Getränke','Gemüse und Früchte','Brot, Getreide, Kartoffeln','Milchprodukte','Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte','Fette, Öle, Nüsse','Süsses und Salziges','Gerichte und Fastfood'];
+const G=['Getränke','Gemüse und Früchte','Brot, Getreide, Kartoffeln','Milchprodukte','Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte','Fette, Öle, Nüsse','Snacks: Süsses und Salziges','Gerichte und Fastfood'];
 const F=[
 ['Wasser / Mineralwasser',0,{getr:1},[['1 Glas (2,5 dl)',1],['1 Flasche (5 dl)',2],['1 Liter',4]]],
 ['Tee ungesüsst',0,{getr:1},[['1 Tasse / Glas (2,5 dl)',1],['1 Liter',4]]],
@@ -202,7 +203,19 @@ const F=[
 ['Mayonnaise / Ketchup-Mayo',5,{fett:1.5},[['1 Esslöffel',1]]],
 ['Rahmsauce',5,{fett:2},[['1 Portion',1]]],
 ['Schokolade',6,{suess:1.25},[['1 Reihe (25 g)',1],['1 Tafel (100 g)',4]]],
-['Gummibärchen / Süssigkeiten',6,{suess:1},[['1 Handvoll (20 g)',1],['1 Beutel (100 g)',5]]],
+['Schokoriegel (z. B. Mars, Snickers, Twix)',6,{suess:2,fett:0.5},[['1 Riegel (50 g)',1],['1 Mini-Riegel',0.4]]],
+['Kinder-Schokoriegel / Schoggistängeli',6,{suess:1},[['1 Riegel (20 g)',1]]],
+['Waffeln mit Schoggi / Schoggi-Biscuit',6,{suess:1.5,fett:0.5},[['1 Packung / 3 Stück (30 g)',1]]],
+['Gummibärli / Fruchtgummi',6,{suess:1},[['1 Handvoll (20 g)',1],['1 kleiner Beutel (50 g)',2.5],['1 grosser Beutel (200 g)',10]]],
+['Bonbons / Lollipop',6,{suess:0.5},[['1 Stück',1],['5 Stück',5]]],
+['Muffin / Brownie / Donut',6,{suess:2,korn:0.3,fett:1},[['1 Stück',1]]],
+['Popcorn (süss oder salzig)',6,{suess:1.5,fett:0.5},[['1 Becher Kino klein (30 g)',1],['1 grosser Becher',3]]],
+['Nachos / Tortilla-Chips',6,{suess:1.5,fett:1},[['1 Handvoll (30 g)',1],['1 Packung (125 g)',4]]],
+['Erdnüsse / Nüsse gesalzen',6,{fett:1,suess:0.5},[['1 Handvoll (20 g)',1],['1 Packung (100 g)',5]]],
+['Gebrannte Mandeln',6,{fett:1,suess:1},[['1 Tüte (100 g)',3]]],
+['Reiswaffeln mit Schoggi',6,{suess:1,korn:0.2},[['2 Stück',1]]],
+['Proteinriegel',6,{suess:0.8,prot:0.3},[['1 Riegel',1]]],
+
 ['Guetzli',6,{suess:1},[['2 Stück',1]]],
 ['Glace',6,{suess:1,milch:0.2},[['1 Kugel',1],['1 Glace am Stiel',1.2]]],
 ['Kuchen / Torte',6,{suess:2,korn:0.5,fett:1},[['1 Stück',1]]],
@@ -225,7 +238,7 @@ const F=[
 ['Curry mit Reis',7,{korn:1,prot:0.8,gf:0.8,fett:1},[['1 Teller',1]]]
 ];
 const MEALS=['Morgenessen','Znüni','Mittagessen','Zvieri','Abendessen','Zwischendurch / Abends'];
-const DEMO=[[0,'Cornflakes / Schoko-Flocken',0,1],[0,'Milch',0,1],[0,'Fruchtsaft / Orangensaft',0,1],[1,'Schoggibrötli / Croissant mit Füllung',0,1],[1,'Eistee',1,1],[2,'Döner Kebab',0,1],[2,'Cola, Limonade (mit Zucker)',1,1],[3,'Chips',0,1],[3,'Apfel',0,1],[4,'Spaghetti Bolognese',0,1],[4,'Salat (Beilage)',0,1],[4,'Wasser / Mineralwasser',0,2],[5,'Gummibärchen / Süssigkeiten',0,1]];
+const DEMO=[[0,'Cornflakes / Schoko-Flocken',0,1],[0,'Milch',0,1],[0,'Fruchtsaft / Orangensaft',0,1],[1,'Schoggibrötli / Croissant mit Füllung',0,1],[1,'Eistee',1,1],[2,'Döner Kebab',0,1],[2,'Cola, Limonade (mit Zucker)',1,1],[3,'Chips',0,1],[3,'Apfel',0,1],[4,'Spaghetti Bolognese',0,1],[4,'Salat (Beilage)',0,1],[4,'Wasser / Mineralwasser',0,2],[5,'Gummibärli / Fruchtgummi',0,1]];
 const $=s=>document.querySelector(s);
 let ENTRIES=[];
 try{ENTRIES=JSON.parse(localStorage.getItem('pyr-entries')||'[]')||[]}catch(e){ENTRIES=[]}
@@ -235,10 +248,13 @@ function fmt(v){const r=Math.round(v*2)/2;return (r%1?r.toFixed(1):String(r)).re
 /* Formular */
 $('#meal').innerHTML=MEALS.map((m,i)=>'<option value="'+i+'">'+m+'</option>').join('');
 $('#grp').innerHTML=G.map((g,i)=>'<option value="'+i+'">'+g+'</option>').join('');
-function fillFood(){const g=+$('#grp').value;$('#food').innerHTML=F.map((f,i)=>[f,i]).filter(([f])=>f[1]===g).map(([f,i])=>'<option value="'+i+'">'+esc(f[0])+'</option>').join('');fillUnit()}
-function fillUnit(){const f=F[+$('#food').value];$('#unit').innerHTML=f[3].map((u,i)=>'<option value="'+i+'">'+esc(u[0])+'</option>').join('')}
-$('#grp').addEventListener('change',fillFood);$('#food').addEventListener('change',fillUnit);fillFood();
-$('#add').addEventListener('click',()=>{const q=parseFloat(String($('#qty').value).replace(',','.'));if(!(q>0))return;ENTRIES.push({m:+$('#meal').value,f:F[+$('#food').value][0],u:+$('#unit').value,q});save();render()});
+function fillFood(){const q=($('#search').value||'').trim().toLowerCase();const g=+$('#grp').value;
+  const list=F.map((f,i)=>[f,i]).filter(([f])=>q?(f[0].toLowerCase().includes(q)||G[f[1]].toLowerCase().includes(q)):f[1]===g);
+  $('#food').innerHTML=list.length?list.map(([f,i])=>'<option value="'+i+'">'+esc(f[0])+(q?' ('+G[f[1]]+')':'')+'</option>').join(''):'<option value="">Nichts gefunden. Versuche ein anderes Wort oder wähle eine Gruppe.</option>';fillUnit()}
+$('#search').addEventListener('input',fillFood);
+function fillUnit(){if($('#food').value===''){$('#unit').innerHTML='';return}const f=F[+$('#food').value];$('#unit').innerHTML=f[3].map((u,i)=>'<option value="'+i+'">'+esc(u[0])+'</option>').join('')}
+$('#grp').addEventListener('change',()=>{$('#search').value='';fillFood()});$('#food').addEventListener('change',fillUnit);fillFood();
+$('#add').addEventListener('click',()=>{if($('#food').value==='')return;const q=parseFloat(String($('#qty').value).replace(',','.'));if(!(q>0))return;ENTRIES.push({m:+$('#meal').value,f:F[+$('#food').value][0],u:+$('#unit').value,q});save();render()});
 $('#demo').addEventListener('click',()=>{ENTRIES=DEMO.map(([m,f,u,q])=>({m,f,u,q}));save();render()});
 $('#clear').addEventListener('click',()=>{ENTRIES=[];save();render()});
 /* Rechnen */
