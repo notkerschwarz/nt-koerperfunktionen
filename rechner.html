@@ -118,7 +118,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
   <div class="box">
     <h2>3. Stufe für Stufe</h2>
     <div class="tblwrap"><table id="tbl"></table></div>
-    <p class="foot">Grundlage: Schweizer Ernährungsempfehlungen (BLV/SGE, 2024) für gesunde Erwachsene. Für Jugendliche gelten ähnliche Mengen, wer viel Sport macht, braucht mehr Getreideprodukte und Getränke. Die Portionen der Lebensmittel sind gerundete Richtwerte, Gerichte wie Pizza oder Döner sind auf die Stufen aufgeteilt. Es werden keine Daten gespeichert oder verschickt.</p>
+    <p class="foot">Grundlage: Empfehlungen der Schweizerischen Gesellschaft für Ernährung (SGE) für Jugendliche von 15 bis 18 Jahren und die Schweizer Ernährungsempfehlungen 2024. Der Bedarf hängt von Geschlecht, Grösse und Bewegung ab: Wer viel Sport macht, braucht mehr Getreideprodukte und Getränke. Die Empfehlungen gelten als Durchschnitt über eine Woche, die Getränke jeden Tag. Die Portionen der Lebensmittel sind gerundete Richtwerte, Gerichte wie Pizza oder Döner sind auf die Stufen aufgeteilt. Es werden keine Daten gespeichert oder verschickt.</p>
   </div>
 </section>
 </div>
@@ -128,9 +128,9 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 const LV=[
  {k:'getr',n:'Ungesüsste Getränke',u:'Glas (2,5 dl)',tgt:6,lo:4,hi:10,c:'--l1',tipLo:'Trinke mehr Wasser oder ungesüssten Tee: 1 bis 2 Liter pro Tag (4 bis 8 Gläser).',tipHi:'Viel getrunken. Das ist in Ordnung, vor allem bei Sport oder Hitze.'},
  {k:'gf',n:'Gemüse und Früchte',u:'Portion (120 g)',tgt:5,lo:4.5,hi:99,c:'--l2',tipLo:'Iss mehr Gemüse und Früchte: 5 Portionen pro Tag, davon 3 Gemüse. Eine Portion ist etwa eine Handvoll.',tipHi:''},
- {k:'korn',n:'Getreide und Kartoffeln',u:'Portion',tgt:3,lo:2,hi:5,c:'--l3',tipLo:'Zu jeder Hauptmahlzeit gehört eine Portion Brot, Teigwaren, Reis, Kartoffeln oder Flocken, am besten Vollkorn.',tipHi:'Recht viel. Bei viel Sport ist mehr in Ordnung, sonst lieber mehr Gemüse.'},
- {k:'milch',n:'Milch und Milchprodukte',u:'Portion',tgt:3,lo:2,hi:4,c:'--l4',tipLo:'2 bis 3 Portionen pro Tag, z. B. ein Glas Milch, ein Joghurt und ein Stück Käse.',tipHi:'Etwas viel Milchprodukte. 2 bis 3 Portionen reichen.'},
- {k:'prot',n:'Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte',u:'Portion',tgt:1,lo:0.5,hi:2,c:'--l4b',tipLo:'1 Portion pro Tag: abwechseln zwischen Hülsenfrüchten, Eiern, Fisch, Tofu und Fleisch.',tipHi:'Mehr als nötig. 1 Portion pro Tag reicht, Fleisch höchstens 2- bis 3-mal pro Woche.'},
+ {k:'korn',n:'Getreide, Kartoffeln, Hülsenfrüchte',u:'Portion',tgt:5,lo:3.5,hi:6.5,c:'--l3',tipLo:'Jugendliche brauchen 4 bis 6 Portionen pro Tag: zu jeder Mahlzeit Brot, Teigwaren, Reis, Kartoffeln oder Flocken, am besten Vollkorn.',tipHi:'Recht viel. Bei viel Sport ist mehr in Ordnung, sonst lieber mehr Gemüse.'},
+ {k:'milch',n:'Milch und Milchprodukte',u:'Portion',tgt:3,lo:2,hi:4,c:'--l4',tipLo:'3 Portionen pro Tag, z. B. ein Glas Milch, ein Joghurt und ein Stück Käse. Das Kalzium braucht ihr für den Knochenaufbau.',tipHi:'Etwas viel Milchprodukte. 3 Portionen reichen.'},
+ {k:'prot',n:'Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte',u:'Portion',tgt:1,lo:0.5,hi:2,c:'--l4b',tipLo:'1 Portion pro Tag: abwechseln zwischen Hülsenfrüchten, Eiern, Fisch, Tofu und Fleisch.',tipHi:'Mehr als nötig. 1 Portion pro Tag reicht. Wechsle ab, Fleisch höchstens 2- bis 3-mal pro Woche.'},
  {k:'fett',n:'Öle, Fette und Nüsse',u:'Portion (10 g Öl / 20 g Nüsse)',tgt:3,lo:1,hi:5,c:'--l5',tipLo:'Etwas Öl (z. B. Rapsöl) und eine kleine Handvoll Nüsse pro Tag gehören dazu.',tipHi:'Viel Fett: oft steckt es versteckt in Pommes, Chips, Gebäck, Saucen und Fastfood.'},
  {k:'suess',n:'Süsses, Salziges, Süssgetränke',u:'Portion (20 g / 2 dl)',tgt:1,lo:-1,hi:1.5,c:'--l6',tipLo:'',tipHi:'Zu viel Süsses, Salziges oder Süssgetränke. Empfohlen ist höchstens 1 kleine Portion pro Tag.'}
 ];
@@ -289,7 +289,7 @@ function render(){
   $('#legend').innerHTML=LV.map(L=>'<span><i style="background:var('+L.c.replace('--l4b','--l4')+');'+(L.k==='prot'?'opacity:.75':'')+'"></i>'+L.n+'</span>').join('');
   const lab={ok:'passt',lo:'zu wenig',hi:'zu viel'};
   $('#tbl').innerHTML='<tr><th>Stufe</th><th>Empfohlen</th><th>Du</th><th>Bewertung</th></tr>'+LV.slice().reverse().map(L=>{const v=t[L.k]||0;const st=ENTRIES.length?status(L,v):'';
-    const rec=L.k==='suess'?'höchstens 1':L.k==='getr'?'4–8 Gläser (1–2 l)':L.k==='milch'?'2–3':String(L.tgt);
+    const rec=L.k==='suess'?'höchstens 1':L.k==='getr'?'4–8 Gläser (1–2 l)':L.k==='korn'?'4–6':L.k==='milch'?'3':L.k==='fett'?'2–3 EL Öl + 1 Handvoll Nüsse':String(L.tgt);
     const tip=st==='lo'?L.tipLo:st==='hi'?L.tipHi:'';
     return '<tr><td><b>'+L.n+'</b><br><span class="note">'+L.u+'</span></td><td class="num">'+rec+'</td><td class="num">'+fmt(v)+'</td><td>'+(st?'<span class="st '+st+'">'+lab[st]+'</span>':'–')+(tip?'<div class="note">'+tip+'</div>':'')+'</td></tr>'}).join('');
   // Hinweise
