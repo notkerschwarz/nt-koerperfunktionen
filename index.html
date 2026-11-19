@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Körperfunktionen trainieren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+body{margin:0}
+
+/* Layout: Kopfband mit Logo rechts, Seitennavigation links (Themen 3.2–3.10), Inhalt rechts; auf dem Handy Navigation als Klappmenü */
+:root{
+  --bg:#f4f7f2; --surface:#ffffff; --fg:#1d2a24; --muted:#5b6b62; --line:#d9e2d6;
+  --band:#1f4d3f; --band-fg:#ffffff; --accent:#8cb21f; --accent-ink:#4d6b00; --accent-soft:#eef5d9;
+  --ok:#2e7d32; --ok-soft:#e5f3e6; --bad:#c62828; --bad-soft:#fbe7e7; --chip:#e8efe5; --org1:#d9917f; --org2:#f2c9b8; --org3:#b98a52; --org4:#efd27a; --org5:#9cc46a; --mk:#1f4d3f; --mk-fg:#ffffff;
+  --f-head:"Bitter", Georgia, serif; --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121a16; --surface:#1b2520; --fg:#e6eee8; --muted:#a3b3aa; --line:#2e3c35;
+  --band:#163a2f; --band-fg:#f2f7f3; --accent:#a8cf3a; --accent-ink:#c6e66b; --accent-soft:#26331a;
+  --ok:#7fd483; --ok-soft:#1c3320; --bad:#ff8a80; --bad-soft:#3a1e1e; --chip:#24302a; --org1:#b86f60; --org2:#8f6a5c; --org3:#a8844f; --org4:#c4a35c; --org5:#7fa356; --mk:#a8cf3a; --mk-fg:#1d2a24; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a16; --surface:#1b2520; --fg:#e6eee8; --muted:#a3b3aa; --line:#2e3c35;
+  --band:#163a2f; --band-fg:#f2f7f3; --accent:#a8cf3a; --accent-ink:#c6e66b; --accent-soft:#26331a;
+  --ok:#7fd483; --ok-soft:#1c3320; --bad:#ff8a80; --bad-soft:#3a1e1e; --chip:#24302a; --org1:#b86f60; --org2:#8f6a5c; --org3:#a8844f; --org4:#c4a35c; --org5:#7fa356; --mk:#a8cf3a; --mk-fg:#1d2a24; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+header.top{background:var(--band);color:var(--band-fg);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top h1{font-family:var(--f-head);font-size:1.3rem;margin:0;line-height:1.2;text-wrap:balance}
+.top .sub{font-size:.8rem;opacity:.85;letter-spacing:.04em}
+.top .ttl{flex:1;min-width:0}
+.logo{background:#ffffff;border-radius:8px;padding:5px 9px;display:flex;align-items:center;flex-shrink:0}
+.logo img{height:30px;width:auto;display:block}
+.menu-btn{display:none;background:transparent;border:1px solid rgba(255,255,255,.5);color:var(--band-fg);border-radius:6px;padding:6px 10px;font:inherit;font-size:.9rem;cursor:pointer}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;padding-block:24px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);align-self:start;display:flex;flex-direction:column;gap:2px}
+.side .grp{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px 10px;font-weight:700}
+.side a{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:7px;color:var(--fg);text-decoration:none;font-size:.95rem}
+.side a .n{font-size:.75rem;font-weight:700;min-width:30px;height:22px;border-radius:11px;background:var(--chip);display:flex;align-items:center;justify-content:center;color:var(--muted);font-variant-numeric:tabular-nums}
+.side a:hover{background:var(--chip)}
+.side a.on{background:var(--band);color:var(--band-fg)}
+.side a.on .n{background:var(--accent);color:#1d2a24}
+main{min-width:0}
+main h2{font-family:var(--f-head);font-size:1.75rem;margin:0 0 6px;line-height:1.2;text-wrap:balance;color:var(--fg)}
+main h3{font-family:var(--f-head);font-size:1.2rem;margin:0 0 10px}
+.lead{color:var(--muted);max-width:68ch;margin:0 0 20px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 18px;border-bottom:2px solid var(--line)}
+.tabs button{font:inherit;font-weight:600;background:none;border:none;padding:8px 14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{color:var(--fg);border-bottom-color:var(--accent)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.goalbox{border-left:5px solid var(--accent)}
+.theory{max-width:72ch}
+.theory p{margin:0 0 12px}
+.theory ul{margin:0 0 12px;padding-left:22px}
+.theory b{color:var(--accent-ink)}
+.merk{background:var(--accent-soft);border-radius:8px;padding:12px 16px;margin:14px 0}
+.merk::before{content:"Merke";display:block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
+.tblwrap{overflow-x:auto;margin:10px 0 14px}
+table.t{border-collapse:collapse;min-width:420px;width:100%;font-size:.95rem}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--chip)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 14px}
+.flow span{background:var(--chip);border-radius:6px;padding:5px 10px;font-size:.92rem;font-weight:600}
+.flow i{color:var(--muted);font-style:normal}
+.goal{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.goal input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent-ink);flex-shrink:0}
+.goal .txt{flex:1;min-width:0}
+.goal .meta{font-size:.8rem;color:var(--muted)}
+.goal a.go{font-size:.85rem;font-weight:600;color:var(--accent-ink);text-decoration:none;white-space:nowrap;padding:4px 9px;border-radius:6px;background:var(--accent-soft)}
+.goals{display:flex;flex-direction:column;gap:8px}
+.stars{color:var(--accent-ink);font-weight:700;letter-spacing:1px}
+.prog{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;margin:6px 0 14px}
+.prog div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.q .head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.tag{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:var(--chip);color:var(--muted)}
+.tag.b{background:var(--accent-soft);color:var(--accent-ink)}
+.q .qt{font-weight:600;margin:0 0 10px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:7px;cursor:pointer}
+.opt input{margin-top:4px;accent-color:var(--accent-ink)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;align-items:center}
+.match select{font:inherit;font-size:.95rem;padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:100%}
+.match select.ok{border-color:var(--ok);background:var(--ok-soft)}
+.match select.bad{border-color:var(--bad);background:var(--bad-soft)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.btn{font:inherit;font-weight:600;border:none;border-radius:7px;padding:8px 16px;cursor:pointer;background:var(--band);color:var(--band-fg)}
+.btn.sec{background:var(--chip);color:var(--fg)}
+.btn:focus-visible,.side a:focus-visible,.tabs button:focus-visible,.goal a.go:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fb{margin-top:10px;padding:9px 12px;border-radius:7px;font-size:.95rem}
+.fb.ok{background:var(--ok-soft);color:var(--fg);border-left:4px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--fg);border-left:4px solid var(--bad)}
+.write textarea{width:100%;min-height:90px;font:inherit;padding:8px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.sol{margin-top:10px;background:var(--accent-soft);border-radius:8px;padding:10px 14px}
+.score{font-family:var(--f-head);font-size:2.2rem;font-variant-numeric:tabular-nums}
+.foot{font-size:.82rem;color:var(--muted);margin-top:28px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;color:var(--fg);display:flex;flex-direction:column;gap:4px}
+.card:hover{border-color:var(--accent)}
+.card .n{font-size:.8rem;color:var(--accent-ink);font-weight:700}
+.card b{font-family:var(--f-head)}
+.card .m{font-size:.82rem;color:var(--muted)}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px;margin:0 0 12px;max-width:440px}
+.fig svg{display:block;width:100%;height:auto}
+.fig .body{fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:5 4}
+.fig .o{fill:var(--org2);stroke:var(--fg);stroke-width:1.5}
+.fig .o2{fill:var(--org2);stroke:var(--fg);stroke-width:1.2}
+.fig .liver{fill:var(--org1);stroke:var(--fg);stroke-width:1.5}
+.fig .stom{fill:var(--org2);stroke:var(--fg);stroke-width:1.5}
+.fig .gall{fill:var(--org5);stroke:var(--fg);stroke-width:1.5}
+.fig .panc{fill:var(--org4);stroke:var(--fg);stroke-width:1.5}
+.fig .colon{fill:none;stroke:var(--org3);stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
+.fig .small{fill:none;stroke:var(--org4);stroke-width:7;stroke-linecap:round}
+.fig .wall{fill:var(--org2);stroke:var(--fg);stroke-width:1.5}
+.fig .villus{fill:var(--org2);stroke:var(--fg);stroke-width:1.2}
+.fig .vessel{fill:none;stroke:var(--bad);stroke-width:2}
+.fig .wallb{fill:var(--chip);stroke:var(--fg);stroke-width:5}
+.fig .flag{fill:none;stroke:var(--fg);stroke-width:2.5}
+.fig .dna{fill:none;stroke:var(--accent-ink);stroke-width:3}
+.fig .capsid{fill:var(--chip);stroke:var(--fg);stroke-width:5}
+.fig .spike{stroke:var(--fg);stroke-width:2}
+.fig .knob{fill:var(--org4);stroke:var(--fg);stroke-width:1.5}
+.fig .food{fill:var(--org3);opacity:.55}
+.fig .hyph{fill:none;stroke:var(--fg);stroke-width:2}
+.fig .spor{fill:var(--chip);stroke:var(--fg);stroke-width:2}
+.fig .sp{fill:var(--fg)}
+.fig .rbc{fill:var(--org1);stroke:var(--fg);stroke-width:1.5}
+.fig .agA{fill:var(--accent);stroke:var(--fg);stroke-width:1}
+.fig .agB{fill:var(--band);stroke:var(--fg);stroke-width:1}
+.fig .lg,.fig .lg2{fill:var(--fg);font:600 13px var(--f-body)}
+.fig .arr{stroke:var(--muted);stroke-width:2.5}
+.fig .ahd{fill:var(--muted)}
+.fig .box{fill:var(--chip);stroke:var(--fg);stroke-width:1.5}
+.fig .cell{fill:var(--org2);stroke:var(--muted);stroke-width:1}
+.fig .tum{fill:var(--bad);opacity:.75;stroke:var(--fg);stroke-width:1}
+.fig .caps{fill:none;stroke:var(--fg);stroke-width:3}
+.fig .vesl{stroke:var(--bad);stroke-width:10;opacity:.35}
+.fig .p1{fill:#9fd3f0}.fig .p2{fill:#a6d36b}.fig .p3{fill:#f2cf6b}.fig .p4{fill:#e9a36c}.fig .p5{fill:#e8d58c}.fig .p6{fill:#d98a8a}
+.fig [class^="p"]{stroke:var(--fg);stroke-width:1.2}
+.fig .ld{stroke:var(--fg);stroke-width:1.2}
+.fig .dot{fill:var(--fg)}
+.fig .mk{fill:var(--mk);stroke:var(--surface);stroke-width:2}
+.fig .mkt{fill:var(--mk-fg);font:700 13px var(--f-body)}
+.fig .mkt2{fill:#1d2a24;font:700 16px var(--f-body)}
+.fig .box+.mkt2{fill:var(--fg)}
+.pre{background:var(--surface);border:1px dashed var(--muted);border-radius:8px;padding:10px 14px;margin:0 0 12px;font-size:.93rem;max-width:520px}
+.pre .cap{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.pre table{border-collapse:collapse;width:100%}
+.pre td,.pre th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left}
+.round{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px;color:var(--muted);font-size:.92rem}
+
+@media (max-width:820px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:16px}
+  .menu-btn{display:inline-block}
+  nav.side{position:static;display:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+  nav.side.open{display:flex}
+  .top h1{font-size:1.05rem}
+  .logo img{height:24px}
+  .match{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="top-in">
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="side">☰ Themen</button>
+  <div class="ttl"><div class="sub">NT · NaTech 8 · Kapitel 3 · Prüfungsvorbereitung</div><h1>Funktionen des Körpers analysieren</h1></div>
+  <div class="logo"><img alt="flade" src="data:image/png;base64,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"></div>
+</div></header>
+
+<div class="wrap">
+  <nav class="side" id="side" aria-label="Themen"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+const GOALS=[
+ [1,'*','t32','… die drei Hauptnährstoffe nennen und zu jedem zwei Nahrungsmittel aufzählen.'],
+ [2,'*','t32','… die Aufgaben der Hauptnährstoffe (Energiequelle, Baustoff) beschreiben.'],
+ [3,'**','t32','… Nahrungsmittel mit einem Nachweis auf Hauptnährstoffe untersuchen.'],
+ [4,'**','t32','… den Energiegehalt von zwei Nahrungsmitteln auf der Verpackung ablesen und vergleichen.'],
+ [5,'*','t33','… die Verdauungsorgane in einer Abbildung beschriften.'],
+ [6,'**','t33','… die Aufgabe von Mund, Magen, Dünndarm und Dickdarm bei der Verdauung beschreiben.'],
+ [7,'***','t33','… mit einem Modell zeigen, warum der Dünndarm eine grosse Oberfläche hat.'],
+ [8,'*','t34','… Viren, Bakterien und Pilzen je eine Krankheit zuordnen.'],
+ [9,'*','t34','… beschreiben, wie eine Tröpfcheninfektion abläuft.'],
+ [10,'**','t34','… Viren und Bakterien nach Grösse, Aufbau und Vermehrung vergleichen.'],
+ [11,'**','t34','… einen Pilz unter dem Mikroskop beobachten und beschriftet zeichnen.'],
+ [12,'**','t34','… beschreiben, wogegen Antibiotika helfen und wogegen nicht.'],
+ [13,'**','t35','… beschreiben, wie Fresszellen Krankheitserreger bekämpfen.'],
+ [14,'***','t35','… den Ablauf der spezifischen Immunantwort mit einer Skizze beschreiben.'],
+ [15,'**','t35','… die vier Blutgruppen nach ihren Antigenen unterscheiden.'],
+ [16,'*','t36','… in einem Impfausweis ablesen, welche Impfungen gemacht wurden.'],
+ [17,'**','t36','… Schutzimpfung und Heilimpfung in einer Tabelle vergleichen.'],
+ [18,'*','t37','… beschreiben, wie man sich mit einer STI ansteckt und wie man sich schützt.'],
+ [19,'*','t37','… drei Anzeichen einer STI nennen.'],
+ [20,'**','t38','… gutartige und bösartige Tumore unterscheiden.'],
+ [21,'*','t38','… zwei Massnahmen nennen, die das Krebsrisiko senken.'],
+ [22,'*','t39','… aus einem Beipackzettel die Dosierung und die Nebenwirkungen herauslesen.'],
+ [23,'**','t39','… Medikamentenmissbrauch und Medikamentenabhängigkeit unterscheiden.'],
+ [24,'*','t310','… drei Merkmale von Mobbing nennen.'],
+ [25,'**','t310','… Schutzfaktoren und Risikofaktoren für die Gesundheit unterscheiden und je zwei Beispiele nennen.'],
+ [26,'***','test','… Gelerntes in neuen Fallbeispielen anwenden.']
+];
+/* Aufgabentypen: mc (eine Antwort), multi (mehrere), tf (richtig/falsch), match (Zuordnen) */
+const T={
+t32:{nr:'3.2',title:'Die Hauptnährstoffe',book:'S. 48–49',
+theory:`<p>Unsere Nahrung besteht zum grössten Teil aus drei <b>Hauptnährstoffen</b>: Kohlenhydrate, Fette und Proteine (Eiweisse). Dazu kommen <b>Ergänzungsstoffe</b>: Vitamine, Mineralstoffe und Ballaststoffe.</p>
+<div class="tblwrap"><table class="t"><tr><th>Hauptnährstoff</th><th>Aufgabe im Körper</th><th>Kommt vor in</th></tr>
+<tr><td><b>Kohlenhydrate</b> (Zuckerstoffe)</td><td>Energiequelle</td><td>Brot, Teigwaren, Kartoffeln, Reis, Süsses</td></tr>
+<tr><td><b>Fette</b></td><td>Energiequelle (die energiereichsten Nährstoffe), nötig für die Aufnahme bestimmter Vitamine</td><td>Öl, Butter, Nüsse, Avocado, Fisch, Wurst, Käse</td></tr>
+<tr><td><b>Proteine</b> (Eiweisse)</td><td>Baustoff: Haut, Haare, Nägel, Muskeln; ausserdem Enzyme, Hormone, Abwehrstoffe</td><td>Fleisch, Fisch, Milch, Eier, Hülsenfrüchte (Bohnen, Linsen, Erbsen)</td></tr></table></div>
+<p><b>Kohlenhydrate</b> gibt es als Einfachzucker (Traubenzucker, Fruchtzucker), Zweifachzucker (Haushaltszucker) und Mehrfachzucker (Stärke = lange Kette aus Traubenzucker). <b>Fette</b> bestehen aus einem wasserlöslichen Teil und drei Fettsäuren. <b>Proteine</b> sind Ketten aus <b>Aminosäuren</b>.</p>
+<p><b>Essenziell</b> heisst: Der Körper kann den Stoff nicht selbst herstellen. Essenzielle Fettsäuren und Aminosäuren müssen wir mit der Nahrung aufnehmen.</p>
+<p><b>Nährstoffnachweise</b> (AM 3.2): Mit Nachweismitteln zeigt man, ob ein Nahrungsmittel Stärke, Traubenzucker, Proteine oder Fett enthält. Für Stärke verwendet man Iod-Kaliumiodid-Lösung: Sie färbt sich bei Stärke blauschwarz. Fett hinterlässt auf Papier einen durchscheinenden Fettfleck.</p>
+<p><b>Energie</b> wird in Kilojoule (kJ) oder Kilokalorien (kcal) angegeben, meist pro 100 g. Wer vergleichen will, muss immer die <b>gleiche Menge</b> vergleichen (z. B. beide pro 100 g).</p>
+<div class="merk">1 g Fett liefert mehr als doppelt so viel Energie wie 1 g Kohlenhydrate. Zu viel Fett und Kohlenhydrate wandelt der Körper in Depotfett um.</div>`,
+ex:[
+{t:'multi',b:'Wissen',g:1,q:'Welche drei Stoffe sind die Hauptnährstoffe?',o:['Kohlenhydrate','Fette','Proteine','Vitamine','Ballaststoffe'],a:[0,1,2],e:'Vitamine und Ballaststoffe sind Ergänzungsstoffe.'},
+{t:'match',b:'Wissen',g:1,q:'Ordne jedem Nahrungsmittel den Hauptnährstoff zu, der darin besonders viel vorkommt.',l:['Teigwaren','Linsen','Butter','Kartoffeln','Ei'],o:['Kohlenhydrate','Proteine','Fette'],a:[0,1,2,0,1]},
+{t:'mc',b:'Verstehen',g:2,q:'Wozu braucht der Körper vor allem Proteine?',o:['Als Baustoff, z. B. für Muskeln und Haut','Als schnelle Energiequelle','Für die Wasseraufnahme im Dickdarm','Damit Vitamine wirken'],a:0},
+{t:'tf',b:'Wissen',g:2,q:'Fette sind die energiereichsten Nährstoffe.',a:true,e:'1 g Fett liefert mehr als doppelt so viel Energie wie 1 g Kohlenhydrate.'},
+{t:'mc',b:'Anwenden',g:3,q:'Du tropfst Iod-Kaliumiodid-Lösung auf eine Kartoffelscheibe. Die Stelle wird blauschwarz. Was weist du nach?',o:['Stärke','Fett','Protein','Wasser'],a:0},
+{t:'mc',b:'Anwenden',g:4,q:'Müesli A: 1600 kJ pro 100 g. Müesli B: 400 kJ pro 30 g Portion. Welche Aussage stimmt?',o:['A liefert pro 100 g mehr Energie (B: etwa 1333 kJ pro 100 g).','B liefert mehr Energie, weil die Portion kleiner ist.','Beide liefern gleich viel Energie.','Man kann die Werte nicht vergleichen.'],a:0,e:'400 kJ : 30 g × 100 g ≈ 1333 kJ. Vergleiche immer die gleiche Menge.'},
+{t:'mc',b:'Verstehen',g:2,q:'Was bedeutet «essenzielle Aminosäure»?',o:['Der Körper kann sie nicht selbst bilden, sie muss mit der Nahrung kommen.','Sie liefert besonders viel Energie.','Sie kommt nur in Fleisch vor.','Sie wird im Dickdarm gebildet.'],a:0}
+],
+w:[{q:'Erkläre, warum ein Sportler, der Muskeln aufbauen will, genug Proteine essen sollte.',a:'Proteine sind Baustoffe. Der Körper braucht sie, um Muskeln aufzubauen und zu erneuern. Gute Quellen sind z. B. Milch, Eier, Fisch, Fleisch oder Hülsenfrüchte.'}]},
+t33:{nr:'3.3',title:'Der Weg der Nahrung',book:'S. 50–53',
+theory:`<p>Bei der <b>Verdauung</b> wird die Nahrung in kleinste Bausteine zerlegt. Nur so können die Nährstoffe ins Blut gelangen.</p>
+<div class="flow" aria-label="Weg der Nahrung"><span>Mund</span><i>→</i><span>Speiseröhre</span><i>→</i><span>Magen</span><i>→</i><span>Dünndarm (mit Zwölffingerdarm)</span><i>→</i><span>Dickdarm</span><i>→</i><span>Mastdarm</span><i>→</i><span>After</span></div>
+<div class="tblwrap"><table class="t"><tr><th>Organ</th><th>Was passiert?</th></tr>
+<tr><td><b>Mund</b></td><td>Zähne zerkleinern, Speichel macht den Brei gleitfähig. Ein Enzym im Speichel zerlegt <b>Stärke</b> in Zucker-Bausteine.</td></tr>
+<tr><td><b>Speiseröhre</b></td><td>Muskelschlauch; wellenförmige Bewegungen transportieren den Brei in den Magen.</td></tr>
+<tr><td><b>Magen</b></td><td>Knetet den Brei. Magensaft: <b>Salzsäure</b> tötet Bakterien, <b>Schleim</b> schützt die Magenwand, ein <b>Enzym</b> zerlegt Proteine.</td></tr>
+<tr><td><b>Dünndarm</b></td><td>Galle (aus Leber, gespeichert in der Gallenblase) und Bauchspeichel kommen dazu und zerlegen Fette, Proteine und Kohlenhydrate. Hier werden die Nährstoffe <b>ins Blut aufgenommen</b>.</td></tr>
+<tr><td><b>Dickdarm</b></td><td>Holt <b>Wasser</b> aus den unverdaulichen Resten zurück. Die Reste werden eingedickt und als Kot über den After abgegeben.</td></tr></table></div>
+<p><b>Enzyme</b> sind Werkzeuge des Körpers aus Proteinen. Sie sorgen dafür, dass chemische Reaktionen (z. B. das Zerlegen von Stärke) schneller ablaufen.</p>
+<p><b>Oberflächenvergrösserung:</b> Die Innenwand des Dünndarms hat <b>Darmfalten</b> und darauf unzählige <b>Darmzotten</b>. So wird die Oberfläche riesig, und es können viel mehr Nährstoffe gleichzeitig ins Blut gelangen. Modell (AM 3.4): Ein gefaltetes Tuch passt in eine kleine Schachtel, hat aber eine viel grössere Fläche als der Schachtelboden.</p>
+<div class="merk">Grosse Oberfläche = mehr Platz für die Aufnahme der Nährstoffe ins Blut.</div>`,
+ex:[
+{t:'match',b:'Wissen',g:5,q:'Bringe den Weg der Nahrung in die richtige Reihenfolge.',l:['1. Station','2. Station','3. Station','4. Station','5. Station'],o:['Mund','Speiseröhre','Magen','Dünndarm','Dickdarm'],a:[0,1,2,3,4]},
+{t:'match',b:'Verstehen',g:6,q:'Ordne die Aufgabe dem richtigen Organ zu.',l:['Wasser wird zurückgewonnen','Stärke wird zerlegt','Salzsäure tötet Bakterien','Nährstoffe gehen ins Blut'],o:['Mund','Magen','Dünndarm','Dickdarm'],a:[3,0,1,2]},
+{t:'mc',b:'Verstehen',g:6,q:'Wozu dient der Schleim im Magen?',o:['Er schützt die Magenwand vor der Salzsäure.','Er zerlegt Fette.','Er nimmt Nährstoffe auf.','Er tötet Bakterien.'],a:0},
+{t:'tf',b:'Wissen',g:6,q:'Die Galle wird in der Gallenblase gebildet.',a:false,e:'Die Galle wird in der Leber gebildet und in der Gallenblase gespeichert.'},
+{t:'mc',b:'Analysieren',g:7,q:'Warum hat der Dünndarm Darmfalten und Darmzotten?',o:['Sie vergrössern die Oberfläche, damit mehr Nährstoffe ins Blut gelangen.','Sie machen den Darm kürzer.','Sie halten Bakterien fest.','Sie bilden die Galle.'],a:0},
+{t:'mc',b:'Anwenden',g:6,q:'Lena hat Durchfall. Welches Organ arbeitet vermutlich nicht richtig?',o:['Der Dickdarm holt zu wenig Wasser zurück.','Die Speicheldrüsen bilden zu wenig Speichel.','Die Speiseröhre ist zu kurz.','Der Magen bildet zu viel Schleim.'],a:0}
+],
+w:[{q:'Beschreibe den Weg eines Stücks Brot vom Mund bis zum After. Nenne bei jedem Organ, was passiert.',a:'Mund: kauen, Speichel, Stärke wird zerlegt → Speiseröhre: Transport durch Muskelbewegungen → Magen: kneten, Salzsäure, Proteine werden zerlegt → Dünndarm: Galle und Bauchspeichel, Nährstoffe gehen ins Blut → Dickdarm: Wasser wird zurückgewonnen → Mastdarm/After: Kot wird abgegeben.'},{q:'Erkläre mit dem Modell «gefaltetes Tuch in einer Schachtel», warum der Dünndarm eine grosse Oberfläche braucht.',a:'Das Tuch ist gefaltet und hat deshalb viel mehr Fläche als der Boden der Schachtel. Genauso hat der Dünndarm durch Falten und Zotten eine riesige Oberfläche. So können viele Nährstoffe gleichzeitig ins Blut übergehen.'}]},
+t34:{nr:'3.4',title:'Krankheitserreger',book:'S. 54–55',
+theory:`<div class="tblwrap"><table class="t"><tr><th></th><th>Viren</th><th>Bakterien</th><th>Pilze</th></tr>
+<tr><td><b>Grösse</b></td><td>0,02–0,3 µm (am kleinsten)</td><td>0,2–10 µm</td><td>2–10 µm (Zellen)</td></tr>
+<tr><td><b>Aufbau</b></td><td>Proteinhülle mit Erbmaterial, <b>keine Zelle</b>, kein Stoffwechsel</td><td>eine Zelle, Erbmaterial frei in der Zelle</td><td>eine oder viele Zellen, Erbmaterial im <b>Zellkern</b>, Zellfäden</td></tr>
+<tr><td><b>Vermehrung</b></td><td>nur in einer <b>Wirtszelle</b>: Virus programmiert die Zelle um, sie baut neue Viren und platzt</td><td>selbstständig durch Teilung</td><td>selbstständig</td></tr>
+<tr><td><b>Beispiele</b></td><td>Grippe, Erkältung, Masern, Windpocken, HIV, Herpes</td><td>Scharlach, Tetanus, Keuchhusten, Tripper, Salmonellen</td><td>Fusspilz, Nagelpilz, Scheidenpilz</td></tr></table></div>
+<p><b>Infektion</b> = Ansteckung mit einem Krankheitserreger. Bei der <b>Tröpfcheninfektion</b> sind die Erreger in winzigen Tröpfchen der Ausatemluft (Husten, Niesen, Sprechen). Eine andere Person atmet sie ein und steckt sich an, z. B. mit Grippe.</p>
+<p><b>Antibiotika</b> hemmen oder töten <b>Bakterien</b>. Gegen <b>Viren</b> wirken sie <b>nicht</b>. Jedes Antibiotikum wirkt nur gegen bestimmte Bakterien. Nimm es genau so lange und so viel, wie die Ärztin oder der Arzt sagt.</p>
+<p><b>Pilz mikroskopieren</b> (AM 3.6): Beim Schimmelpilz siehst du Zellfäden und ein Geflecht. Zeichne nur, was du siehst, mit Bleistift, beschrifte mit Linien und notiere die Vergrösserung.</p>
+<div class="merk">Viele Bakterien sind nützlich, z. B. Darmbakterien für die Verdauung oder Bakterien für Joghurt.</div>`,
+ex:[
+{t:'match',b:'Wissen',g:8,q:'Wer verursacht die Krankheit?',l:['Grippe','Fusspilz','Tetanus','Masern','Scharlach'],o:['Virus','Bakterium','Pilz'],a:[0,2,1,0,1]},
+{t:'mc',b:'Verstehen',g:9,q:'Wie läuft eine Tröpfcheninfektion ab?',o:['Erreger in der Ausatemluft einer kranken Person werden von einer anderen Person eingeatmet.','Erreger gelangen über verdorbenes Essen in den Darm.','Erreger werden durch einen Mückenstich übertragen.','Erreger dringen durch eine Wunde ein.'],a:0},
+{t:'multi',b:'Analysieren',g:10,q:'Welche Aussagen treffen nur auf Viren zu (nicht auf Bakterien)?',o:['Sie sind keine Zellen.','Sie vermehren sich nur in Wirtszellen.','Sie haben keinen eigenen Stoffwechsel.','Sie haben Erbmaterial.','Sie können Krankheiten auslösen.'],a:[0,1,2],e:'Erbmaterial haben beide, und beide können krank machen.'},
+{t:'tf',b:'Wissen',g:12,q:'Gegen eine Grippe hilft ein Antibiotikum.',a:false,e:'Grippe wird von Viren verursacht. Antibiotika wirken nur gegen Bakterien.'},
+{t:'mc',b:'Anwenden',g:12,q:'Tim hört nach drei Tagen mit dem Antibiotikum auf, weil es ihm besser geht. Was ist das Problem?',o:['Das Antibiotikum wirkt vielleicht nicht richtig, und Bakterien können überleben.','Er wird gegen Viren immun.','Er bekommt sicher eine Allergie.','Es gibt kein Problem.'],a:0},
+{t:'mc',b:'Wissen',g:11,q:'Was gehört zu einer korrekten Mikroskopzeichnung?',o:['Bleistift, nur Gesehenes zeichnen, Beschriftung mit Linien, Vergrösserung angeben','Farbstift und schöne Schattierungen','Alles aus dem Buch abzeichnen','Nur die Beschriftung, keine Zeichnung'],a:0}
+],
+w:[{q:'Vergleiche Viren und Bakterien in Grösse, Aufbau und Vermehrung (Tabelle).',a:'Grösse: Viren 0,02–0,3 µm, Bakterien 0,2–10 µm. Aufbau: Viren = Proteinhülle mit Erbmaterial, keine Zelle; Bakterien = eine Zelle mit Erbmaterial. Vermehrung: Viren nur in Wirtszellen; Bakterien selbstständig durch Teilung.'}]},
+t35:{nr:'3.5',title:'Das Immunsystem',book:'S. 56–59',
+theory:`<p>Das <b>Immunsystem</b> ist das Abwehrsystem des Körpers. Die wichtigsten Abwehrzellen sind verschiedene <b>weisse Blutzellen</b>.</p>
+<p><b>Unspezifische Immunantwort:</b> <b>Fresszellen</b> verlassen die Blutbahn, «fressen» Krankheitserreger und verdauen sie. Danach <b>präsentieren</b> sie die <b>Antigene</b> des Erregers auf ihrer Oberfläche. Fresszellen bekämpfen jede Art von Erreger, sie sind nicht spezialisiert.</p>
+<p><b>Antigene</b> sind spezielle Strukturen an der Oberfläche von Zellen und Erregern. <b>Antikörper</b> sind Proteine, die genau zu einem Antigen passen, wie ein <b>Schlüssel zum Schloss</b>.</p>
+<p><b>Spezifische Immunantwort</b> (gezielt gegen einen Erreger):</p>
+<div class="flow"><span>Fresszelle präsentiert Antigen</span><i>→</i><span>T-Helferzelle aktiviert</span><i>→</i><span>B-Zellen bilden Antikörper</span><i>→</i><span>Antigen-Antikörper-Komplex</span><i>→</i><span>Fresszelle baut ihn ab</span></div>
+<ul><li>Einige B-Zellen werden zu <b>B-Gedächtniszellen</b>: Beim nächsten Kontakt bildet der Körper sofort Antikörper. Man ist <b>immun</b>.</li><li><b>T-Killerzellen</b> zerstören Körperzellen, die von Viren befallen sind (auch Krebszellen).</li></ul>
+<p><b>Blutgruppen</b> (AB0-System): Sie unterscheiden sich durch die Antigene auf den roten Blutzellen.</p>
+<div class="tblwrap"><table class="t"><tr><th>Blutgruppe</th><th>Antigene auf roten Blutzellen</th><th>Antikörper im Plasma</th></tr>
+<tr><td>A</td><td>A</td><td>Anti-B</td></tr><tr><td>B</td><td>B</td><td>Anti-A</td></tr><tr><td>AB</td><td>A und B</td><td>keine</td></tr><tr><td>0</td><td>keine</td><td>Anti-A und Anti-B</td></tr></table></div>
+<div class="merk">Trifft Anti-A auf Antigen A (oder Anti-B auf B), verklumpt das Blut. Darum muss bei einer Blutübertragung die Blutgruppe passen.</div>`,
+ex:[
+{t:'mc',b:'Verstehen',g:13,q:'Wie bekämpfen Fresszellen Krankheitserreger?',o:['Sie nehmen die Erreger auf, verdauen sie und präsentieren deren Antigene.','Sie bilden Antikörper gegen genau einen Erreger.','Sie speichern Informationen über den Erreger.','Sie zerstören nur Krebszellen.'],a:0},
+{t:'match',b:'Wissen',g:14,q:'Ordne die Zelle ihrer Aufgabe zu.',l:['Fresszelle','T-Helferzelle','B-Zelle','B-Gedächtniszelle','T-Killerzelle'],o:['frisst Erreger und präsentiert Antigene','aktiviert B-Zellen und T-Killerzellen','bildet Antikörper','speichert Informationen über den Erreger','zerstört befallene Körperzellen'],a:[0,1,2,3,4]},
+{t:'mc',b:'Verstehen',g:14,q:'Was bedeutet «Schlüssel-Schloss-Prinzip»?',o:['Jeder Antikörper passt genau zu einem bestimmten Antigen.','Jeder Antikörper passt zu allen Erregern.','Fresszellen schliessen Erreger ein.','Antigene öffnen die Zellen.'],a:0},
+{t:'mc',b:'Analysieren',g:14,q:'Warum wird man an Windpocken meist nur einmal krank?',o:['B-Gedächtniszellen erkennen den Erreger sofort, und Antikörper werden schnell gebildet.','Das Virus stirbt nach der ersten Krankheit aus.','Fresszellen werden nach der Krankheit grösser.','Man hat danach keine Antigene mehr.'],a:0},
+{t:'match',b:'Wissen',g:15,q:'Welche Antigene haben die roten Blutzellen?',l:['Blutgruppe A','Blutgruppe B','Blutgruppe AB','Blutgruppe 0'],o:['Antigen A','Antigen B','Antigen A und B','keine Antigene'],a:[0,1,2,3]},
+{t:'mc',b:'Anwenden',g:15,q:'Ein Patient mit Blutgruppe A bekommt Blut der Gruppe B. Was passiert?',o:['Seine Anti-B-Antikörper verklumpen die fremden roten Blutzellen.','Nichts, alle Blutgruppen passen zusammen.','Er wird zur Blutgruppe AB.','Sein Blut wird dünner.'],a:0}
+],
+w:[{q:'Zeichne eine Skizze (Pfeilkette) der spezifischen Immunantwort und erkläre sie in 3–4 Sätzen.',a:'Fresszelle frisst Erreger und präsentiert Antigene → T-Helferzelle erkennt das Antigen und aktiviert B-Zellen (und T-Killerzellen) → B-Zellen vermehren sich und bilden passende Antikörper → Antikörper binden an Antigene (Antigen-Antikörper-Komplex) → Fresszellen bauen die Komplexe ab. Einige B-Zellen werden zu Gedächtniszellen. T-Killerzellen zerstören befallene Körperzellen.'}]},
+t36:{nr:'3.6',title:'Impfungen',book:'S. 60–61',
+theory:`<div class="tblwrap"><table class="t"><tr><th></th><th>Schutzimpfung (aktive Immunisierung)</th><th>Heilimpfung (passive Immunisierung)</th></tr>
+<tr><td><b>Impfstoff</b></td><td>abgeschwächte Erreger oder einzelne Antigene</td><td>fertige Antikörper (meist aus dem Blut von Tieren gewonnen)</td></tr>
+<tr><td><b>Wer bildet die Antikörper?</b></td><td>der eigene Körper (aktiv)</td><td>niemand, sie werden von aussen gegeben (passiv)</td></tr>
+<tr><td><b>Gedächtniszellen</b></td><td>ja</td><td>nein</td></tr>
+<tr><td><b>Wann?</b></td><td>vorbeugend, vor einer Ansteckung (z. B. Säuglinge gegen Masern)</td><td>wenn jemand schon krank ist, oder kurz vor einer Reise</td></tr>
+<tr><td><b>Schutzdauer</b></td><td>lange (Jahre, teils lebenslang), manchmal Auffrischung nötig</td><td>kurz, kein dauerhafter Schutz</td></tr></table></div>
+<p><b>Impfausweis</b> (AM 3.10): Er zeigt, gegen welche Krankheiten jemand wann geimpft wurde. Eingetragen sind Datum, Impfstoff und Krankheit. So sieht man, ob eine <b>Auffrischungsimpfung</b> nötig ist.</p>
+<p><b>Grippeimpfung:</b> Die Antigene der Grippeviren verändern sich jedes Jahr stark. Die alten Gedächtniszellen erkennen das neue Virus nicht mehr. Darum braucht es jedes Jahr einen neuen Impfstoff.</p>`,
+ex:[
+{t:'multi',b:'Verstehen',g:17,q:'Welche Aussagen gelten für die Schutzimpfung (aktive Immunisierung)?',o:['Der Körper bildet selbst Antikörper.','Es entstehen B-Gedächtniszellen.','Der Schutz hält lange.','Es werden fertige Antikörper gespritzt.','Sie hilft vor allem, wenn man schon krank ist.'],a:[0,1,2]},
+{t:'mc',b:'Anwenden',g:17,q:'Jemand wird von einem Hund gebissen, der Tollwut haben könnte, und ist nicht geimpft. Welche Impfung hilft sofort?',o:['Heilimpfung (passive Immunisierung)','Schutzimpfung (aktive Immunisierung)','Keine Impfung, nur Antibiotika','Die Grippeimpfung'],a:0,e:'Fertige Antikörper wirken sofort. Der Körper braucht für eigene Antikörper zu lange.'},
+{t:'tf',b:'Verstehen',g:17,q:'Bei der Heilimpfung entstehen Gedächtniszellen, darum schützt sie lebenslang.',a:false},
+{t:'mc',b:'Analysieren',g:17,q:'Warum muss man sich jedes Jahr neu gegen Grippe impfen?',o:['Die Antigene der Grippeviren verändern sich, die Gedächtniszellen erkennen sie nicht mehr.','Der Impfstoff wird im Körper sofort abgebaut.','Grippe wird von Bakterien verursacht.','Gedächtniszellen leben nur einen Tag.'],a:0},
+{t:'mc',b:'Anwenden',g:16,q:'Im Impfausweis steht bei Tetanus die letzte Impfung vor 20 Jahren. Was bedeutet das?',o:['Der Schutz kann nachlassen, eine Auffrischungsimpfung ist sinnvoll.','Man ist sicher lebenslang geschützt.','Man hatte Tetanus.','Man darf nie mehr geimpft werden.'],a:0}
+],
+w:[{q:'Erstelle eine Tabelle: Schutzimpfung und Heilimpfung (Impfstoff, Wer bildet Antikörper?, Gedächtniszellen, Schutzdauer).',a:'Siehe Tabelle in der Theorie: Schutzimpfung = abgeschwächte Erreger, Körper bildet Antikörper selbst, Gedächtniszellen ja, langer Schutz. Heilimpfung = fertige Antikörper, keine eigene Bildung, keine Gedächtniszellen, kurzer Schutz.'}]},
+t37:{nr:'3.7',title:'Sexuell übertragbare Infektionen',book:'S. 62–63',
+theory:`<p><b>STI</b> (sexually transmitted infections) werden bei sexuellen Aktivitäten übertragen: über <b>Körperflüssigkeiten</b> (Sperma, Scheidenflüssigkeit, Blut) oder über den <b>Kontakt von Schleimhäuten</b> (Scheide, Penis, Mund).</p>
+<p><b>Schutz:</b> Kondom oder Femidom bei allen sexuellen Aktivitäten. Gegen HPV und Hepatitis B gibt es zusätzlich eine <b>Impfung</b>. Die Pille, die Spirale und andere Verhütungsmittel verhindern nur eine Schwangerschaft, sie schützen <b>nicht</b> vor STI.</p>
+<p><b>Mögliche Anzeichen:</b> Brennen beim Urinieren, Ausfluss aus Scheide oder Penis, Juckreiz, Rötungen oder Bläschen. Viele STI verlaufen aber lange <b>ohne Anzeichen</b>, und man kann trotzdem andere anstecken. Bei Anzeichen immer zur Ärztin oder zum Arzt, denn unbehandelt drohen bleibende Schäden wie Unfruchtbarkeit.</p>
+<div class="tblwrap"><table class="t"><tr><th>Erreger</th><th>STI</th><th>Behandlung</th></tr>
+<tr><td>Bakterien</td><td>Chlamydien, Tripper (Gonorrhö), Syphilis</td><td>heilbar mit Antibiotika</td></tr>
+<tr><td>Viren</td><td>Herpes, HPV, Hepatitis B, HIV</td><td>nicht heilbar; Beschwerden lindern bzw. Ausbruch von Aids verhindern; Impfung gegen HPV und Hepatitis B</td></tr></table></div>`,
+ex:[
+{t:'multi',b:'Wissen',g:18,q:'Wodurch kann man sich mit einer STI anstecken?',o:['Austausch von Sperma oder Scheidenflüssigkeit','Kontakt von Schleimhäuten, auch beim Oralverkehr','Blut','Händeschütteln'],a:[0,1,2]},
+{t:'tf',b:'Verstehen',g:18,q:'Mara nimmt die Pille. Sie ist damit auch vor STI geschützt.',a:false,e:'Die Pille verhindert nur eine Schwangerschaft. Vor STI schützen Kondom und Femidom.'},
+{t:'multi',b:'Wissen',g:19,q:'Welche Anzeichen können auf eine STI hinweisen?',o:['Brennen beim Urinieren','Ausfluss','Bläschen oder Rötungen im Intimbereich','Schnupfen','Juckreiz'],a:[0,1,2,4]},
+{t:'tf',b:'Verstehen',g:19,q:'Samuel: «Der Ausschlag ist von selbst verschwunden, also muss ich nicht zum Arzt.»',a:false,e:'Anzeichen können verschwinden, die Infektion bleibt. Unbehandelt drohen Schäden, und er kann andere anstecken.'},
+{t:'match',b:'Wissen',g:18,q:'Ist die STI mit Antibiotika heilbar?',l:['Chlamydien','HIV','Syphilis','Herpes'],o:['ja, mit Antibiotika','nein, nicht heilbar'],a:[0,1,0,1]}
+],
+w:[{q:'Erkläre einer Kollegin, wie man sich vor STI schützen kann, und warum die Pille dafür nicht reicht.',a:'Kondom oder Femidom bei allen sexuellen Aktivitäten, dazu Impfungen gegen HPV und Hepatitis B. Die Pille verhindert nur die Schwangerschaft. Sie verhindert nicht, dass Körperflüssigkeiten ausgetauscht werden, darum schützt sie nicht vor STI.'}]},
+t38:{nr:'3.8',title:'Krebs',book:'S. 64',
+theory:`<p>Im Körper werden abgestorbene Zellen durch neue ersetzt. Manchmal gerät die Zellteilung <b>ausser Kontrolle</b>. Normalerweise erkennt das Immunsystem solche Zellen und zerstört sie. Gelingt das nicht, entsteht eine Geschwulst, ein <b>Tumor</b>.</p>
+<div class="tblwrap"><table class="t"><tr><th>Gutartiger Tumor</th><th>Bösartiger Tumor (Krebs)</th></tr>
+<tr><td>bleibt am Entstehungsort</td><td>wächst in das gesunde Gewebe hinein</td></tr>
+<tr><td>breitet sich nicht aus</td><td>Zellen gelangen über die Blutbahn an andere Orte und bilden <b>Metastasen</b> (Ableger)</td></tr></table></div>
+<p><b>Krebsrisiko senken:</b> nicht rauchen (Lungenkrebs), guter Sonnenschutz (Hautkrebs), gesund leben mit ausgewogener Ernährung und Bewegung, HPV-Impfung, Vorsorgeuntersuchungen. Je früher Krebs entdeckt wird, desto grösser sind die Heilungschancen.</p>`,
+ex:[
+{t:'match',b:'Verstehen',g:20,q:'Gutartig oder bösartig?',l:['bildet Metastasen','bleibt am Entstehungsort','wächst ins gesunde Gewebe','breitet sich nicht aus'],o:['gutartiger Tumor','bösartiger Tumor'],a:[1,0,1,0]},
+{t:'mc',b:'Wissen',g:20,q:'Was sind Metastasen?',o:['Neue Tumore an anderen Stellen, entstanden aus verschleppten Krebszellen','Weisse Blutzellen, die Krebs bekämpfen','Gutartige Geschwulste','Medikamente gegen Krebs'],a:0},
+{t:'multi',b:'Anwenden',g:21,q:'Welche Massnahmen senken das Krebsrisiko?',o:['Nicht rauchen','Sonnenschutz','Vorsorgeuntersuchungen','Häufig Solarium','HPV-Impfung'],a:[0,1,2,4]},
+{t:'mc',b:'Analysieren',g:20,q:'Warum ist ein bösartiger Tumor gefährlicher als ein gutartiger?',o:['Er streut über das Blut im ganzen Körper und zerstört gesundes Gewebe.','Er ist immer grösser.','Er wächst nur langsam.','Er entsteht nur in der Lunge.'],a:0}
+],
+w:[{q:'Nenne zwei Massnahmen gegen Krebs und begründe jeweils, gegen welche Krebsart sie helfen.',a:'Zum Beispiel: Nicht rauchen senkt das Risiko für Lungenkrebs. Sonnenschutz senkt das Risiko für Hautkrebs. HPV-Impfung schützt vor Gebärmutterhalskrebs.'}]},
+t39:{nr:'3.9',title:'Medikamente',book:'S. 65',
+theory:`<p>Richtig angewendet helfen Medikamente, Krankheiten zu heilen und Schmerzen zu lindern. Wie man ein Medikament anwendet, steht im <b>Beipackzettel</b>:</p>
+<ul><li><b>Anwendungsgebiet:</b> Wogegen hilft es?</li><li><b>Dosierung:</b> Wie viel, wie oft, wie lange? (z. B. «Erwachsene und Jugendliche ab 12 Jahren: 1 Tablette, höchstens 3-mal täglich»)</li><li><b>Nebenwirkungen:</b> Welche unerwünschten Wirkungen sind möglich?</li><li><b>Gegenanzeigen</b> und <b>Wechselwirkungen</b> mit anderen Medikamenten</li></ul>
+<div class="tblwrap"><table class="t"><tr><th>Medikamentenmissbrauch</th><th>Medikamentenabhängigkeit</th></tr>
+<tr><td>Ein gesunder Mensch nimmt Medikamente ohne Notwendigkeit, und es wird zur Gewohnheit.</td><td>Der Körper verlangt nach dem Medikament. Man braucht immer mehr für die gleiche Wirkung und kommt ohne es nicht mehr aus.</td></tr></table></div>
+<p>Abhängig machen können z. B. bestimmte <b>Schlaf- und Beruhigungsmittel</b>, einige <b>Schmerzmittel</b>, <b>Aufputschmittel</b> und bestimmte <b>Hustenmittel</b>. Sie dürfen nie lange ohne Pause eingenommen werden. Bei Fragen helfen Apothekerinnen und Apotheker.</p>
+<div class="merk">Missbrauch ist der Schritt vor der Abhängigkeit.</div>`,
+ex:[
+{t:'mc',b:'Anwenden',g:22,q:'Im Beipackzettel steht: «Jugendliche ab 12 Jahren: 1 Tablette alle 6 Stunden, höchstens 4 Tabletten pro Tag.» Wie viele Tabletten darf ein 14-Jähriger höchstens an einem Tag nehmen?',o:['4','6','2','so viele er braucht'],a:0},
+{t:'mc',b:'Wissen',g:22,q:'Wo im Beipackzettel findest du, welche unerwünschten Wirkungen auftreten können?',o:['Nebenwirkungen','Dosierung','Zusammensetzung','Hersteller'],a:0},
+{t:'match',b:'Verstehen',g:23,q:'Missbrauch oder Abhängigkeit?',l:['«Ich brauche heute drei Schlaftabletten statt einer.»','«Ich nehme vor jeder Prüfung ein Beruhigungsmittel, obwohl ich gesund bin.»','«Ohne Tablette halte ich es nicht mehr aus.»'],o:['Missbrauch','Abhängigkeit'],a:[1,0,1]},
+{t:'tf',b:'Bewerten',g:23,q:'Ein Muskelaufbau-Medikament aus dem Internet ist harmlos, wenn es viele gute Bewertungen hat.',a:false,e:'Medikamente aus unsicheren Quellen können gefährlich sein. Frage eine Fachperson, z. B. in der Apotheke.'}
+],
+w:[{q:'Erkläre den Unterschied zwischen Medikamentenmissbrauch und Medikamentenabhängigkeit mit je einem Beispiel.',a:'Missbrauch: Ein gesunder Mensch nimmt ein Medikament ohne Grund, z. B. regelmässig Schmerzmittel «zur Sicherheit». Abhängigkeit: Man braucht das Medikament, die Dosis steigt, z. B. braucht jemand immer mehr Schlaftabletten, um einschlafen zu können.'}]},
+t310:{nr:'3.10',title:'Gesund sein und bleiben',book:'S. 66–67',
+theory:`<p><b>Gesundheit</b> heisst nicht nur, körperlich gesund zu sein, sondern sich als ganzer Mensch <b>wohlzufühlen</b>. Stress, Ausgrenzung oder Angst beeinflussen das Wohlbefinden genauso wie körperliche Beschwerden.</p>
+<p><b>Mobbing:</b> Eine Person wird von einer anderen oder einer Gruppe <b>wiederholt und über längere Zeit</b> schikaniert. Merkmale sind zum Beispiel:</p>
+<ul><li>abschätzig behandeln oder vor anderen blossstellen</li><li>beschimpfen oder anschreien</li><li>wie Luft behandeln, übergehen</li><li>Gerüchte verbreiten, schlecht über jemanden reden</li><li>herumschubsen oder anpöbeln</li></ul>
+<div class="tblwrap"><table class="t"><tr><th></th><th>Schutzfaktoren (stärken)</th><th>Risikofaktoren (vermeiden)</th></tr>
+<tr><td><b>innere</b> (bei mir selbst)</td><td>gesunde Ernährung, genug Bewegung, Verzicht auf Suchtmittel, Wechsel von Stress und Entspannung</td><td>Rauchen, Alkohol, Bewegungsmangel, Dauerstress, wenig Schlaf</td></tr>
+<tr><td><b>äussere</b> (Umfeld)</td><td>Unterstützung und Anerkennung in Familie und bei Freunden, intakte Umwelt</td><td>Mobbing, Streit, Lärm, verschmutzte Umwelt</td></tr></table></div>`,
+ex:[
+{t:'multi',b:'Wissen',g:24,q:'Welche Verhaltensweisen sind Merkmale von Mobbing (wenn sie wiederholt vorkommen)?',o:['Gerüchte verbreiten','Jemanden wie Luft behandeln','Jemanden vor anderen blossstellen','Einmal eine andere Meinung haben','Jemanden herumschubsen'],a:[0,1,2,4]},
+{t:'match',b:'Verstehen',g:25,q:'Schutzfaktor oder Risikofaktor?',l:['genug Schlaf','Rauchen','Freunde, die einen unterstützen','Bewegungsmangel','Sport im Verein'],o:['Schutzfaktor','Risikofaktor'],a:[0,1,0,1,0]},
+{t:'mc',b:'Analysieren',g:25,q:'Ist «Unterstützung in der Familie» ein innerer oder ein äusserer Schutzfaktor?',o:['äusserer Schutzfaktor','innerer Schutzfaktor','innerer Risikofaktor','äusserer Risikofaktor'],a:0},
+{t:'tf',b:'Verstehen',g:24,q:'Ein einzelner Streit unter Freunden ist bereits Mobbing.',a:false,e:'Mobbing geschieht wiederholt und über längere Zeit.'}
+],
+w:[{q:'Nenne je zwei Schutzfaktoren und zwei Risikofaktoren für deine Gesundheit. Welchen Schutzfaktor möchtest du stärken?',a:'Zum Beispiel Schutzfaktoren: Bewegung, gesunde Ernährung, gute Freunde. Risikofaktoren: Rauchen, zu wenig Schlaf, Dauerstress. Deine persönliche Antwort zum Stärken eines Schutzfaktors kann ganz verschieden sein.'}]}
+};
+/* Fallbeispiele für Lernziel 26 (nur in der Lernkontrolle) */
+const CASES=[
+{t:'mc',b:'Anwenden',g:26,q:'Noah hat hohes Fieber und Husten. Die Ärztin sagt: «Ein Virus.» Er möchte ein Antibiotikum. Was ist richtig?',o:['Ein Antibiotikum hilft nicht, es wirkt nur gegen Bakterien.','Ein Antibiotikum hilft sofort.','Er braucht eine Heilimpfung gegen Bakterien.','Er sollte doppelt so viel Antibiotikum nehmen.'],a:0},
+{t:'mc',b:'Analysieren',g:26,q:'Sara isst fast nur Pommes, Chips und Süssgetränke. Welche zwei Hauptnährstoffe nimmt sie im Überfluss auf, und was macht der Körper damit?',o:['Fette und Kohlenhydrate – Überschuss wird zu Depotfett.','Proteine und Vitamine – sie werden ausgeschieden.','Ballaststoffe – sie werden zu Muskeln.','Wasser und Mineralstoffe – sie werden gespeichert.'],a:0},
+{t:'mc',b:'Anwenden',g:26,q:'Lia hat Blutgruppe 0 und braucht eine Bluttransfusion. Welches Blut passt?',o:['Nur Blut der Gruppe 0','Blut der Gruppe A','Blut der Gruppe AB','Jedes Blut'],a:0,e:'Lia hat Anti-A und Anti-B. Jedes Blut mit Antigen A oder B würde verklumpen.'},
+{t:'mc',b:'Bewerten',g:26,q:'Jan reist in zwei Tagen in ein Gebiet mit einer gefährlichen Krankheit und ist nicht geimpft. Was ist sinnvoll?',o:['Heilimpfung, weil die fertigen Antikörper sofort schützen.','Schutzimpfung, weil sie sofort wirkt.','Antibiotika vorsorglich einnehmen.','Nichts tun, der Körper bildet sofort Antikörper.'],a:0},
+{t:'mc',b:'Analysieren',g:26,q:'Bei einer Darmkrankheit sind die Darmzotten zerstört. Warum verliert die Person an Gewicht?',o:['Die Oberfläche ist kleiner, es gelangen weniger Nährstoffe ins Blut.','Der Magen bildet keine Salzsäure mehr.','Der Dickdarm nimmt zu viel Wasser auf.','Die Leber bildet zu viel Galle.'],a:0},
+{t:'mc',b:'Bewerten',g:26,q:'Elif wird seit Wochen in einem Klassenchat ausgelacht und schläft schlecht. Was ist die beste Reaktion?',o:['Mit einer Vertrauensperson (Eltern, Lehrperson, Schulsozialarbeit) sprechen.','Allein abwarten, das hört von selbst auf.','Zurückbeleidigen.','Schlaftabletten nehmen.'],a:0}
+];
+/* ---- Abbildungen ---- */
+/* Abbildungen (eigene Schemata, keine Lehrmittel-Scans). Marker: Nummer im Kreis mit Hinweislinie */
+function MK(n,x,y,lx,ly){return '<line class="ld" x1="'+x+'" y1="'+y+'" x2="'+lx+'" y2="'+ly+'"/><circle class="dot" cx="'+x+'" cy="'+y+'" r="3"/><circle class="mk" cx="'+lx+'" cy="'+ly+'" r="12"/><text class="mkt" x="'+lx+'" y="'+(ly+5)+'" text-anchor="middle">'+n+'</text>';}
+function SVG(vb,inner,label){return '<svg viewBox="'+vb+'" role="img" aria-label="'+label+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';}
+const DIGM={1:[150,71,40,60],2:[150,125,40,118],3:[92,182,20,170],4:[208,200,292,188],5:[128,206,20,226],6:[205,252,292,252],7:[180,316,292,318],8:[108,325,20,325],9:[157,402,40,404]};
+function figDig(nums){
+  let s='<path class="body" d="M112 92 Q150 104 188 92 L250 128 Q264 138 262 160 L252 400 Q250 420 230 420 L70 420 Q50 420 48 400 L38 160 Q36 138 50 128 Z"/>'+
+  '<circle class="body" cx="150" cy="50" r="38"/><path class="o" d="M136 66 Q150 78 164 66 Q150 72 136 66 Z"/>'+
+  '<rect class="o" x="144" y="80" width="12" height="90" rx="5"/>'+
+  '<path class="liver" d="M66 160 Q118 138 166 156 Q172 176 150 192 Q118 214 86 210 Q62 196 66 160 Z"/>'+
+  '<path class="stom" d="M152 162 Q200 148 224 180 Q234 216 206 238 Q178 254 158 236 Q172 228 180 214 Q186 196 170 186 Q158 178 152 168 Z"/>'+
+  '<ellipse class="gall" cx="128" cy="206" rx="10" ry="7"/>'+
+  '<path class="panc" d="M142 248 Q182 238 224 246 Q228 255 216 259 Q178 263 144 259 Z"/>'+
+  '<path class="colon" d="M114 372 L106 286 Q106 272 122 272 L208 272 Q224 272 224 288 L220 352 Q218 368 202 368 L162 370 L158 404"/>'+
+  '<path class="small" d="M130 296 q10 -12 20 0 t20 0 t20 0 t20 0 M130 318 q10 -12 20 0 t20 0 t20 0 t20 0 M130 340 q10 -12 20 0 t20 0 t20 0 t20 0"/>';
+  nums.forEach(n=>{const m=DIGM[n];s+=MK(n,m[0],m[1],m[2],m[3])});
+  return SVG('0 0 320 430',s,'Schema des Verdauungssystems mit Nummern');
+}
+const FIG={
+dig1:()=>figDig([1,2,4,7,8]),
+dig2:()=>figDig([3,4,5,6,9]),
+zotte:()=>{let s='<rect class="o2" x="10" y="160" width="300" height="30" rx="4"/>'+
+  '<path class="wall" d="M10 160 L40 160 Q45 80 85 80 Q125 80 130 160 L180 160 Q185 80 225 80 Q265 80 270 160 L310 160"/>';
+  [52,68,84,100,116].forEach(x=>{s+='<rect class="villus" x="'+(x-6)+'" y="'+(x==84?56:66)+'" width="12" height="'+(x==84?30:22)+'" rx="6"/>'});
+  [192,208,224,240,256].forEach(x=>{s+='<rect class="villus" x="'+(x-6)+'" y="66" width="12" height="22" rx="6"/>'});
+  [146,162,286].forEach(x=>{s+='<rect class="villus" x="'+(x-6)+'" y="138" width="12" height="24" rx="6"/>'});
+  s+='<path class="vessel" d="M81 86 L81 62 Q84 56 87 62 L87 86"/>';
+  s+=MK(1,225,110,300,40)+MK(2,240,70,300,100)+MK(3,84,64,20,30);
+  return SVG('0 0 320 200',s,'Schema einer Darmfalte mit Darmzotten');},
+bakt:()=>{let s='<path class="flag" d="M262 92 q12 -14 22 0 t22 0 t14 -6"/>'+
+  '<rect class="wallb" x="60" y="50" width="204" height="84" rx="42"/>'+
+  '<path class="dna" d="M110 92 q12 -22 24 0 t24 0 t24 0 t24 0 q-12 18 -40 8"/>';
+  s+=MK(1,90,52,60,18)+MK(2,120,120,150,166)+MK(3,170,92,200,18)+MK(4,290,90,300,140);
+  return SVG('0 0 330 180',s,'Schema eines Bakteriums');},
+virus:()=>{let s='';for(let i=0;i<12;i++){const a=i*Math.PI/6,x1=130+62*Math.cos(a),y1=110+62*Math.sin(a),x2=130+80*Math.cos(a),y2=110+80*Math.sin(a);s+='<line class="spike" x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/><circle class="knob" cx="'+x2.toFixed(1)+'" cy="'+y2.toFixed(1)+'" r="6"/>'}
+  s+='<circle class="capsid" cx="130" cy="110" r="60"/><path class="dna" d="M100 112 q10 -20 20 0 t20 0 t20 0"/>';
+  s+=MK(1,140,112,250,120)+MK(2,85,70,20,30)+MK(3,198,70,250,30);
+  return SVG('0 0 270 220',s,'Schema eines Virus');},
+pilz:()=>{let s='<rect class="food" x="10" y="170" width="300" height="40" rx="4"/>'+
+  '<path class="hyph" d="M30 180 Q80 170 120 185 T210 178 T300 186 M40 195 Q100 186 160 196 T290 192"/>';
+  [[70,95],[120,70],[175,88],[230,75]].forEach(([x,y])=>{s+='<path class="hyph" d="M'+x+' 178 Q'+(x+4)+' '+((y+178)/2)+' '+x+' '+(y+12)+'"/><circle class="spor" cx="'+x+'" cy="'+y+'" r="12"/>'});
+  [[252,58],[262,70],[258,46],[270,56]].forEach(([x,y])=>{s+='<circle class="sp" cx="'+x+'" cy="'+y+'" r="3"/>'});
+  s+=MK(1,120,70,60,30)+MK(2,262,62,300,30)+MK(3,175,135,300,120)+MK(4,100,190,40,140);
+  return SVG('0 0 320 215',s,'Schema eines Schimmelpilzes');},
+blut:()=>{const cells=[['B'],[],['A'],['A','B']];let s='';
+  cells.forEach((ag,i)=>{const cx=50+i*90,cy=72;s+='<circle class="rbc" cx="'+cx+'" cy="'+cy+'" r="30"/>';
+   for(let k=0;k<6;k++){const a=k*Math.PI/3,x=cx+34*Math.cos(a),y=cy+34*Math.sin(a);const t=ag.length==2?ag[k%2]:ag[0];if(!t)continue;
+    s+=t=='A'?'<path class="agA" d="M'+x.toFixed(1)+' '+(y-6).toFixed(1)+' l6 10 l-12 0 z"/>':'<rect class="agB" x="'+(x-5).toFixed(1)+'" y="'+(y-5).toFixed(1)+'" width="10" height="10"/>'}
+   s+='<circle class="mk" cx="'+cx+'" cy="18" r="12"/><text class="mkt" x="'+cx+'" y="23" text-anchor="middle">'+(i+1)+'</text>'});
+  s+='<path class="agA" d="M30 134 l6 10 l-12 0 z"/><text class="lg" x="44" y="144">= Antigen A</text><rect class="agB" x="160" y="135" width="10" height="10"/><text class="lg" x="178" y="144">= Antigen B</text>';
+  return SVG('0 0 360 155',s,'Vier rote Blutzellen mit Antigenen');},
+immun:()=>{const P=[[50,50],[180,50],[310,50],[245,150],[115,150]];let s='';
+  for(let i=0;i<4;i++){const a=P[i],b=P[i+1],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,d=Math.abs(ux)>0.9?44:34;s+='<line class="arr" x1="'+(a[0]+ux*d).toFixed(1)+'" y1="'+(a[1]+uy*d).toFixed(1)+'" x2="'+(b[0]-ux*d).toFixed(1)+'" y2="'+(b[1]-uy*d).toFixed(1)+'" marker-end="url(#ah)"/>'}
+  s='<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0 0 L10 5 L0 10 z"/></marker></defs>'+s;
+  P.forEach((p,i)=>{s+='<rect class="box" x="'+(p[0]-40)+'" y="'+(p[1]-24)+'" width="80" height="48" rx="10"/><text class="mkt2" x="'+p[0]+'" y="'+(p[1]+7)+'" text-anchor="middle">'+(i+1)+'</text>'});
+  return SVG('0 0 360 200',s,'Ablauf der Immunantwort in fünf Schritten');},
+tumor:()=>{let s='<text class="lg2" x="85" y="20" text-anchor="middle">Abbildung A</text><text class="lg2" x="275" y="20" text-anchor="middle">Abbildung B</text>';
+  for(let r=0;r<5;r++)for(let c=0;c<6;c++){s+='<rect class="cell" x="'+(10+c*25)+'" y="'+(32+r*25)+'" width="22" height="22" rx="4"/>';s+='<rect class="cell" x="'+(200+c*25)+'" y="'+(32+r*25)+'" width="22" height="22" rx="4"/>'}
+  s+='<path class="tum" d="M45 70 Q70 50 95 72 Q125 66 118 100 Q130 128 98 130 Q70 150 55 122 Q28 116 40 96 Q30 80 45 70 Z"/><path class="vesl" d="M0 160 L170 160"/><circle class="tum" cx="140" cy="160" r="5"/><path class="tum" d="M146 40 Q162 34 166 48 Q170 62 154 62 Q140 60 146 40 Z"/>';
+  s+='<path class="tum" d="M240 80 Q270 62 296 82 Q320 100 300 124 Q276 144 250 128 Q226 112 240 80 Z"/><path class="caps" d="M234 76 Q270 52 302 78 Q330 102 304 130 Q276 152 246 134 Q218 114 234 76 Z"/>';
+  return SVG('0 0 360 170',s,'Zwei Tumore im Gewebe');},
+pyr:()=>{const L=6,W=280,H=210,top=10;let s='';const cls=['p1','p2','p3','p4','p5','p6'];
+  for(let i=0;i<L;i++){const y1=top+H-(i+1)*H/L,y2=top+H-i*H/L,w1=W*(1-(i+1)/L)+20,w2=W*(1-i/L)+20,cx=150;
+   s+='<path class="'+cls[i]+'" d="M'+(cx-w2/2)+' '+y2+' L'+(cx+w2/2)+' '+y2+' L'+(cx+w1/2)+' '+y1+' L'+(cx-w1/2)+' '+y1+' Z"/>';
+   s+='<text class="mkt2" x="'+cx+'" y="'+((y1+y2)/2+6)+'" text-anchor="middle">'+(i+1)+'</text>'}
+  return SVG('0 0 300 230',s,'Lebensmittelpyramide mit sechs Stufen');}
+};
+
+/* Zusätzliche Übungen (Version 2). img = Abbildung mit Nummern, pre = Beispieldokument */
+const NUM=a=>a.map(n=>'Nummer '+n);
+const PRE={
+naehr:'<div class="pre"><div class="cap">Beispiel: Nährwertangaben (Werte gerundet)</div><table><tr><th></th><th>Nussmischung<br>pro 100 g</th><th>Reiswaffeln<br>pro 100 g</th></tr><tr><td>Energie</td><td>2550 kJ (610 kcal)</td><td>1600 kJ (380 kcal)</td></tr><tr><td>Fett</td><td>52 g</td><td>3 g</td></tr><tr><td>Kohlenhydrate</td><td>14 g</td><td>80 g</td></tr><tr><td>Eiweiss</td><td>20 g</td><td>8 g</td></tr></table></div>',
+impf:'<div class="pre"><div class="cap">Beispiel: Auszug aus einem Impfausweis</div><table><tr><th>Impfung gegen</th><th>Datum</th></tr><tr><td>Diphtherie, Tetanus, Keuchhusten</td><td>02.2011 · 04.2011 · 06.2011 · 05.2012 · 03.2016</td></tr><tr><td>Masern, Mumps, Röteln</td><td>03.2012 · 09.2012</td></tr><tr><td>Hepatitis B</td><td>10.2023 · 04.2024</td></tr><tr><td>HPV</td><td>–</td></tr></table></div>',
+beip:'<div class="pre"><div class="cap">Beispiel: Auszug aus einem Beipackzettel (erfundenes Schmerzmittel)</div><p style="margin:0 0 6px"><b>Dosierung:</b> Erwachsene und Jugendliche ab 12 Jahren: 1 Tablette. Frühestens nach 6 Stunden darf eine weitere Tablette eingenommen werden. Höchstens 3 Tabletten pro Tag. Ohne ärztlichen Rat nicht länger als 3 Tage einnehmen.</p><p style="margin:0"><b>Mögliche Nebenwirkungen:</b> Magenschmerzen, Übelkeit, selten Hautausschlag. Bei Atemnot sofort eine Ärztin oder einen Arzt aufsuchen.</p></div>'
+};
+const EXTRA={
+t32:[
+{t:'match',img:'pyr',b:'Wissen',g:1,q:'Lebensmittelpyramide: Welche Lebensmittelgruppe gehört zu welcher Stufe?',l:NUM([1,2,3,4,5,6]),o:['Ungesüsste Getränke','Gemüse und Früchte','Getreide, Kartoffeln, Hülsenfrüchte','Milchprodukte, Fleisch, Fisch, Eier, Tofu','Öle, Fette, Nüsse','Süsses, Salziges, Alkohol'],a:[0,1,2,3,4,5]},
+{t:'mc',b:'Wissen',g:1,q:'Welches Nahrungsmittel besteht vor allem aus Fett?',o:['Olivenöl','Reis','Apfel','Pouletbrust'],a:0},
+{t:'tf',b:'Verstehen',g:1,q:'Hülsenfrüchte wie Linsen und Kichererbsen sind gute Proteinquellen, auch für Menschen, die kein Fleisch essen.',a:true},
+{t:'multi',b:'Verstehen',g:2,q:'Wofür braucht der Körper Proteine?',o:['Als Baustoff für Muskeln','Für Enzyme und Hormone','Für Abwehrstoffe des Immunsystems','Als wichtigste Energiequelle im Alltag'],a:[0,1,2]},
+{t:'mc',b:'Anwenden',g:2,q:'Mia hat vor dem Sportturnier Zeit für einen Snack. Was liefert ihr am schnellsten Energie?',o:['Eine Banane (Kohlenhydrate)','Ein Stück Hartkäse (Fett und Proteine)','Ein Glas Wasser','Eine Handvoll Nüsse (vor allem Fett)'],a:0},
+{t:'tf',b:'Wissen',g:3,q:'Hinterlässt ein Nahrungsmittel auf Papier einen durchscheinenden Fleck, der nach dem Trocknen bleibt, enthält es Fett.',a:true,e:'Ein Wasserfleck verschwindet beim Trocknen, ein Fettfleck bleibt.'},
+{t:'mc',b:'Verstehen',g:3,q:'Beim Stärkenachweis tropfst du die Iod-Kaliumiodid-Lösung zusätzlich auf Wasser. Wozu?',o:['Zum Vergleich: So siehst du, wie die Lösung ohne Stärke aussieht.','Damit die Lösung stärker wirkt.','Damit die Stärke schneller verdaut wird.','Das ist nicht nötig.'],a:0},
+{t:'mc',pre:'naehr',b:'Anwenden',g:4,q:'Welches Produkt liefert pro 100 g mehr Energie, und warum?',o:['Die Nussmischung, weil sie viel Fett enthält.','Die Reiswaffeln, weil sie viele Kohlenhydrate enthalten.','Beide gleich viel.','Die Reiswaffeln, weil sie leichter sind.'],a:0},
+{t:'mc',pre:'naehr',b:'Anwenden',g:4,q:'Du isst eine Portion von 30 g Nussmischung. Wie viel Energie nimmst du ungefähr auf?',o:['etwa 765 kJ','etwa 2550 kJ','etwa 85 kJ','etwa 300 kJ'],a:0,e:'2550 kJ : 100 × 30 = 765 kJ.'},
+{t:'mc',b:'Wissen',g:4,q:'Auf Verpackungen steht die Energie in kJ und kcal. Welche Umrechnung stimmt ungefähr?',o:['1 kcal ≈ 4,2 kJ','1 kJ ≈ 4,2 kcal','1 kcal = 100 kJ','1 kcal = 1 kJ'],a:0}
+],
+t33:[
+{t:'match',img:'dig1',b:'Wissen',g:5,q:'Beschrifte die Verdauungsorgane.',l:NUM([1,2,4,7,8]),o:['Mund','Speiseröhre','Magen','Dünndarm','Dickdarm'],a:[0,1,2,3,4]},
+{t:'match',img:'dig2',b:'Wissen',g:5,q:'Beschrifte die Organe.',l:NUM([3,4,5,6,9]),o:['Leber','Magen','Gallenblase','Bauchspeicheldrüse','Mastdarm und After'],a:[0,1,2,3,4]},
+{t:'mc',b:'Wissen',g:6,q:'Wo gelangen die meisten Nährstoffe ins Blut?',o:['im Dünndarm','im Magen','im Dickdarm','in der Speiseröhre'],a:0},
+{t:'mc',b:'Verstehen',g:6,q:'Was macht die Galle?',o:['Sie hilft bei der Verdauung der Fette.','Sie tötet Bakterien im Magen ab.','Sie holt Wasser aus dem Speisebrei.','Sie transportiert den Brei in den Magen.'],a:0},
+{t:'mc',b:'Verstehen',g:6,q:'Was sind Enzyme?',o:['Werkzeuge des Körpers aus Proteinen, die das Zerlegen der Nahrung beschleunigen','Bakterien im Dickdarm','Ein anderes Wort für Ballaststoffe','Muskeln der Speiseröhre'],a:0},
+{t:'match',img:'zotte',b:'Wissen',g:7,q:'Beschrifte das Schema der Dünndarmwand.',l:NUM([1,2,3]),o:['Darmfalte','Darmzotte','Blutgefäss'],a:[0,1,2]},
+{t:'mc',b:'Analysieren',g:7,q:'Modell «gefaltetes Tuch in einer Schachtel»: Was stellt der Boden der Schachtel dar?',o:['Die Fläche, die ein glatter Darm ohne Falten und Zotten hätte','Die Darmzotten','Den Magen','Die Nährstoffe'],a:0}
+],
+t34:[
+{t:'match',img:'bakt',b:'Wissen',g:10,q:'Beschrifte das Bakterium.',l:NUM([1,2,3,4]),o:['Zellwand','Zellplasma','Erbmaterial','Geissel'],a:[0,1,2,3]},
+{t:'match',img:'virus',b:'Wissen',g:10,q:'Beschrifte das Virus.',l:NUM([1,2,3]),o:['Erbmaterial','Proteinhülle','Oberflächenproteine (Antigene)'],a:[0,1,2]},
+{t:'match',img:'pilz',b:'Wissen',g:11,q:'So sieht Schimmelpilz unter dem Binokular oder Mikroskop aus. Beschrifte.',l:NUM([1,2,3,4]),o:['Sporenkapsel','Sporen','Zellfaden','Pilzgeflecht im Nahrungsmittel'],a:[0,1,2,3]},
+{t:'match',b:'Wissen',g:8,q:'Wer verursacht die Krankheit?',l:['Erkältung','Keuchhusten','Nagelpilz','Windpocken','Salmonellenvergiftung'],o:['Virus','Bakterium','Pilz'],a:[0,1,2,0,1]},
+{t:'multi',b:'Anwenden',g:9,q:'Wie schützt du andere vor einer Tröpfcheninfektion, wenn du erkältet bist?',o:['In die Armbeuge husten und niesen','Regelmässig Hände waschen','Abstand halten oder eine Maske tragen','Ein Antibiotikum nehmen'],a:[0,1,2]},
+{t:'tf',b:'Wissen',g:10,q:'Viren sind grösser als Bakterien.',a:false,e:'Viren sind viel kleiner (0,02–0,3 µm) als Bakterien (0,2–10 µm).'},
+{t:'mc',b:'Wissen',g:10,q:'Wie vermehren sich Bakterien?',o:['Durch Teilung','Nur in einer Wirtszelle','Durch Sporenkapseln','Gar nicht'],a:0},
+{t:'match',b:'Anwenden',g:12,q:'Hilft ein Antibiotikum?',l:['Scharlach','Grippe','Erkältung','Keuchhusten'],o:['ja','nein'],a:[0,1,1,0]},
+{t:'mc',b:'Verstehen',g:12,q:'Was bedeutet «Antibiotika-Resistenz»?',o:['Bakterien sind unempfindlich geworden, das Antibiotikum wirkt nicht mehr gegen sie.','Der Mensch verträgt keine Antibiotika mehr.','Viren werden durch Antibiotika stärker.','Das Antibiotikum ist abgelaufen.'],a:0}
+],
+t35:[
+{t:'match',img:'immun',b:'Verstehen',g:14,q:'Die Skizze zeigt die spezifische Immunantwort in 5 Schritten. Was geschieht bei welchem Schritt?',l:NUM([1,2,3,4,5]),o:['Fresszelle frisst den Erreger und präsentiert seine Antigene','T-Helferzelle erkennt das Antigen und aktiviert B-Zellen','B-Zellen bilden passende Antikörper','Antikörper binden an die Antigene (Antigen-Antikörper-Komplex)','Fresszellen bauen die Komplexe ab'],a:[0,1,2,3,4]},
+{t:'match',img:'blut',b:'Anwenden',g:15,q:'Welche Blutgruppe hat die Blutzelle?',l:['Blutzelle 1','Blutzelle 2','Blutzelle 3','Blutzelle 4'],o:['A','B','AB','0'],a:[1,3,0,2]},
+{t:'mc',b:'Wissen',g:13,q:'Zu welchen Zellen gehören die Fresszellen?',o:['zu den weissen Blutzellen','zu den roten Blutzellen','zu den Blutplättchen','zu den Nervenzellen'],a:0},
+{t:'tf',b:'Verstehen',g:13,q:'Fresszellen bekämpfen nur einen ganz bestimmten Erreger.',a:false,e:'Fresszellen sind nicht spezialisiert. Sie gehören zur unspezifischen Abwehr.'},
+{t:'mc',b:'Wissen',g:15,q:'Welche Antikörper hat ein Mensch mit Blutgruppe AB im Blutplasma?',o:['keine','Anti-A','Anti-B','Anti-A und Anti-B'],a:0},
+{t:'mc',b:'Wissen',g:15,q:'Welche Antikörper hat ein Mensch mit Blutgruppe A im Blutplasma?',o:['Anti-B','Anti-A','keine','Anti-A und Anti-B'],a:0}
+],
+t36:[
+{t:'mc',pre:'impf',b:'Anwenden',g:16,q:'Gegen welche Krankheit ist diese Person noch nicht geimpft?',o:['HPV','Masern','Tetanus','Hepatitis B'],a:0},
+{t:'mc',pre:'impf',b:'Anwenden',g:16,q:'Wie oft wurde die Person gegen Masern geimpft?',o:['2-mal','1-mal','3-mal','5-mal'],a:0},
+{t:'mc',pre:'impf',b:'Analysieren',g:16,q:'Die letzte Tetanus-Impfung war 2016. Was sollte die Person tun?',o:['Im Impfplan nachschauen oder ärztlich abklären, wann die Auffrischung fällig ist','Nichts, sie ist für immer geschützt','Sofort eine Heilimpfung machen','Ein Antibiotikum nehmen'],a:0},
+{t:'match',b:'Verstehen',g:17,q:'Schutzimpfung oder Heilimpfung?',l:['abgeschwächte Erreger werden gespritzt','fertige Antikörper werden gespritzt','es entstehen Gedächtniszellen','wirkt sofort, aber nur kurz'],o:['Schutzimpfung','Heilimpfung'],a:[0,1,0,1]},
+{t:'mc',b:'Verstehen',g:17,q:'Warum braucht es bei manchen Impfungen eine Auffrischung?',o:['Der Schutz lässt mit der Zeit nach, die Auffrischung erinnert das Immunsystem wieder.','Weil der erste Impfstoff falsch war.','Weil die Impfung sonst ansteckend ist.','Auffrischungen sind nie nötig.'],a:0}
+],
+t37:[
+{t:'multi',b:'Anwenden',g:18,q:'Was schützt vor STI?',o:['Kondom','Femidom','Impfung gegen HPV und Hepatitis B','Pille','Spirale'],a:[0,1,2]},
+{t:'tf',b:'Verstehen',g:19,q:'Man kann eine STI haben, ohne etwas davon zu merken.',a:true,e:'Viele STI, z. B. Chlamydien, verlaufen lange ohne Anzeichen.'},
+{t:'mc',b:'Bewerten',g:18,q:'Luca hat seit ein paar Tagen Brennen beim Urinieren. Was ist am sinnvollsten?',o:['Zur Ärztin, zum Arzt oder zu einer Beratungsstelle gehen','Abwarten, bis es von selbst weggeht','Ein Schmerzmittel nehmen und nichts sagen','Im Internet ein Medikament bestellen'],a:0},
+{t:'match',b:'Wissen',g:18,q:'Welcher Erreger verursacht die STI?',l:['Chlamydien','Herpes','Tripper','HPV','Syphilis','HIV'],o:['Bakterium','Virus'],a:[0,1,0,1,0,1]},
+{t:'multi',b:'Wissen',g:18,q:'Gegen welche STI gibt es eine Impfung?',o:['HPV','Hepatitis B','HIV','Chlamydien'],a:[0,1]}
+],
+t38:[
+{t:'match',img:'tumor',b:'Analysieren',g:20,q:'Welche Abbildung zeigt welchen Tumor?',l:['Abbildung A','Abbildung B'],o:['gutartiger Tumor','bösartiger Tumor'],a:[1,0],e:'A: Die Zellen wachsen ins Gewebe und gelangen über ein Blutgefäss an andere Orte (Metastasen). B: Der Tumor ist abgegrenzt.'},
+{t:'mc',b:'Verstehen',g:21,q:'Warum senkt Sonnenschutz das Risiko für Hautkrebs?',o:['Er schützt die Hautzellen vor UV-Strahlung, die das Erbmaterial schädigen kann.','Er tötet Krebszellen ab.','Er macht die Haut dicker.','Er stärkt die Fresszellen.'],a:0},
+{t:'tf',b:'Wissen',g:21,q:'Rauchen erhöht das Risiko für Lungenkrebs.',a:true},
+{t:'mc',b:'Verstehen',g:20,q:'Was geschieht normalerweise mit Zellen, deren Teilung ausser Kontrolle gerät?',o:['Das Immunsystem erkennt und zerstört sie.','Sie werden zu roten Blutzellen.','Sie werden mit dem Kot ausgeschieden.','Nichts, das ist normal.'],a:0}
+],
+t39:[
+{t:'mc',pre:'beip',b:'Anwenden',g:22,q:'Lea ist 13 Jahre alt. Wie viele Tabletten darf sie höchstens an einem Tag nehmen?',o:['3','1','6','so viele, bis die Schmerzen weg sind'],a:0},
+{t:'mc',pre:'beip',b:'Anwenden',g:22,q:'Lea nimmt um 7 Uhr eine Tablette. Wann darf sie frühestens die nächste nehmen?',o:['um 13 Uhr','um 9 Uhr','um 10 Uhr','erst am nächsten Tag'],a:0},
+{t:'multi',pre:'beip',b:'Anwenden',g:22,q:'Welche Nebenwirkungen nennt der Beipackzettel?',o:['Magenschmerzen','Übelkeit','Hautausschlag','Fieber','Kopfschmerzen'],a:[0,1,2]},
+{t:'mc',b:'Wissen',g:22,q:'Was ist eine Nebenwirkung?',o:['Eine unerwünschte Wirkung eines Medikaments','Die Hauptwirkung gegen die Krankheit','Die empfohlene Menge','Der Preis des Medikaments'],a:0},
+{t:'tf',b:'Verstehen',g:23,q:'Wer immer mehr von einem Medikament braucht, um die gleiche Wirkung zu spüren, zeigt ein Anzeichen von Abhängigkeit.',a:true},
+{t:'multi',b:'Wissen',g:23,q:'Welche Medikamente können abhängig machen?',o:['bestimmte Schlaf- und Beruhigungsmittel','einige Schmerzmittel','Aufputschmittel','Antibiotika'],a:[0,1,2]}
+],
+t310:[
+{t:'multi',b:'Verstehen',g:24,q:'Welche Beispiele sind Mobbing, wenn sie über längere Zeit passieren?',o:['Peinliche Fotos von jemandem im Klassenchat verbreiten','Jemanden immer wieder vom Spiel ausschliessen','In einer Diskussion eine andere Meinung vertreten','Jemandem wiederholt drohen'],a:[0,1,3]},
+{t:'match',b:'Analysieren',g:25,q:'Ordne die Faktoren zu.',l:['ausgewogene Ernährung','Lärm im Wohnquartier','gute Freundschaften','Dauerstress'],o:['innerer Schutzfaktor','äusserer Schutzfaktor','innerer Risikofaktor','äusserer Risikofaktor'],a:[0,3,1,2]},
+{t:'mc',b:'Bewerten',g:24,q:'Du beobachtest, wie ein Mitschüler immer wieder ausgelacht wird. Was ist am sinnvollsten?',o:['Einer Lehrperson oder einer anderen Vertrauensperson davon erzählen','Mitlachen, damit man nicht selbst dran ist','Nichts tun, es geht dich nichts an','Die Täter im Chat beleidigen'],a:0},
+{t:'tf',b:'Verstehen',g:25,q:'Gesundheit bedeutet nur, nicht krank zu sein.',a:false,e:'Zur Gesundheit gehört auch das Wohlbefinden, also wie es dir körperlich, psychisch und im Zusammenleben geht.'}
+]};
+
+for(const k in EXTRA)T[k].ex.push(...EXTRA[k]);
+const ORDER=['t32','t33','t34','t35','t36','t37','t38','t39','t310'];
+const LS='kf3-lernziele';
+let done={};try{done=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){done={}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(done))}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+function nav(cur){
+  let h='<div class="grp">Start</div><a href="#lernziele" class="'+(cur==='lernziele'?'on':'')+'"><span class="n">★</span>Lernziele</a><div class="grp">Themen</div>';
+  ORDER.forEach(k=>{h+='<a href="#'+k+'" class="'+(cur===k?'on':'')+'"><span class="n">'+T[k].nr+'</span>'+T[k].title+'</a>'});
+  h+='<div class="grp">Testen</div><a href="#test" class="'+(cur==='test'?'on':'')+'"><span class="n">✓</span>Lernkontrolle</a>';
+  $('#side').innerHTML=h;
+}
+function goalList(){
+  let h='';GOALS.forEach(([n,lv,tp,tx])=>{
+    const topic=tp==='test'?'Lernkontrolle':T[tp].nr+' '+T[tp].title;
+    h+='<label class="goal" for="g'+n+'"><input type="checkbox" id="g'+n+'" data-g="'+n+'" '+(done[n]?'checked':'')+'><span class="txt">'+n+'. Ich kann '+esc(tx)+'<div class="meta"><span class="stars">'+lv+'</span> · '+topic+'</div></span><a class="go" href="#'+tp+'">Üben →</a></label>';
+  });return h;
+}
+function viewStart(){
+  const cnt=Object.values(done).filter(Boolean).length;
+  let cards='';ORDER.forEach(k=>{const gs=GOALS.filter(g=>g[2]===k).map(g=>g[0]);cards+='<a class="card" href="#'+k+'"><span class="n">Kapitel '+T[k].nr+'</span><b>'+T[k].title+'</b><span class="m">Lernziele '+gs.join(', ')+' · '+T[k].ex.length+' Übungen</span></a>'});
+  $('#main').innerHTML=`<h2>Prüfungsvorbereitung Kapitel 3</h2>
+  <p class="lead">Hier übst du alle Lernziele zu «Funktionen des Körpers analysieren». Zu jedem Thema gibt es eine kurze <b>Theorie</b>, <b>Übungen</b> mit sofortiger Rückmeldung (mit «Neue Übungen» bekommst du immer wieder andere Aufgaben, auch zu Abbildungen) und einen <b>Schreibauftrag</b> fürs NT-Heft. In der <b>Lernkontrolle</b> testest du dich mit gemischten Aufgaben und Fallbeispielen.</p>
+  <div class="box goalbox"><h3>Meine Lernziele</h3><p style="margin:0;color:var(--muted);font-size:.95rem">Ich kann … Hake ab, was du sicher kannst. * Grundanforderungen · ** mittlere · *** erhöhte Anforderungen</p>
+  <div style="margin-top:10px;font-weight:600"><span id="cnt">${cnt}</span> von ${GOALS.length}</div><div class="prog"><div id="bar" style="width:${cnt/GOALS.length*100}%"></div></div>
+  <div class="goals">${goalList()}</div></div>
+  <h3 style="margin-top:24px">Themen</h3><div class="cards">${cards}</div>
+  <p class="foot">Grundlage: NaTech 8, Grundlagenbuch Kapitel 3 und die Lernziele deiner Lehrperson. Deine Haken werden nur auf diesem Gerät gespeichert. Übungsresultate werden nicht gespeichert.</p>`;
+  document.querySelectorAll('.goal input').forEach(i=>i.addEventListener('change',()=>{done[i.dataset.g]=i.checked;save();const c=Object.values(done).filter(Boolean).length;$('#cnt').textContent=c;$('#bar').style.width=(c/GOALS.length*100)+'%'}));
+}
+function qHtml(x,id,num){
+  let body='';
+  if(x.t==='mc'||x.t==='multi'){const ty=x.t==='mc'?'radio':'checkbox';body='<div class="opts">'+x.o.map((o,i)=>'<label class="opt" for="'+id+'o'+i+'"><input type="'+ty+'" name="'+id+'" id="'+id+'o'+i+'" value="'+i+'"><span>'+esc(o)+'</span></label>').join('')+'</div>'+(x.t==='multi'?'<div style="font-size:.85rem;color:var(--muted);margin-top:6px">Mehrere Antworten sind richtig.</div>':'');}
+  if(x.t==='tf'){body='<div class="opts"><label class="opt" for="'+id+'o0"><input type="radio" name="'+id+'" id="'+id+'o0" value="1"><span>Richtig</span></label><label class="opt" for="'+id+'o1"><input type="radio" name="'+id+'" id="'+id+'o1" value="0"><span>Falsch</span></label></div>';}
+  if(x.t==='match'){body='<div class="match">'+x.l.map((l,i)=>'<label for="'+id+'s'+i+'">'+esc(l)+'</label><select id="'+id+'s'+i+'"><option value="">– wählen –</option>'+x.o.map((o,j)=>'<option value="'+j+'">'+esc(o)+'</option>').join('')+'</select>').join('')+'</div>';}
+  let pre='';if(x.pre)pre+=PRE[x.pre];if(x.img)pre+='<div class="fig">'+FIG[x.img]()+'</div>';
+  const qt=x.t==='tf'?'Richtig oder falsch? «'+esc(x.q)+'»':esc(x.q);
+  return '<div class="q" id="'+id+'"><div class="head"><span class="tag">'+(num?('Aufgabe '+num+' · Lernziel '+x.g):'Lernziel '+x.g)+'</span><span class="tag b">'+x.b+'</span>'+(x.img?'<span class="tag">Abbildung</span>':'')+'</div><p class="qt">'+qt+'</p>'+pre+body+'<div class="row"><button class="btn" data-chk="'+id+'">Überprüfen</button></div><div class="fbx"></div></div>';
+}
+function check(x,id){
+  const el=document.getElementById(id);let ok=false;
+  el.querySelectorAll('.opt').forEach(o=>o.classList.remove('ok','bad'));
+  if(x.t==='mc'){const s=el.querySelector('input:checked');if(!s)return msg(el,null);ok=+s.value===x.a;el.querySelectorAll('.opt')[x.a].classList.add('ok');if(!ok)s.closest('.opt').classList.add('bad');}
+  if(x.t==='tf'){const s=el.querySelector('input:checked');if(!s)return msg(el,null);ok=(s.value==='1')===x.a;el.querySelectorAll('.opt')[x.a?0:1].classList.add('ok');if(!ok)s.closest('.opt').classList.add('bad');}
+  if(x.t==='multi'){const s=[...el.querySelectorAll('input:checked')].map(i=>+i.value);if(!s.length)return msg(el,null);ok=s.length===x.a.length&&s.every(v=>x.a.includes(v));el.querySelectorAll('.opt').forEach((o,i)=>{if(x.a.includes(i))o.classList.add('ok');else if(s.includes(i))o.classList.add('bad')});}
+  if(x.t==='match'){const ss=[...el.querySelectorAll('select')];if(ss.some(s=>s.value===''))return msg(el,null);ok=true;ss.forEach((s,i)=>{const r=+s.value===x.a[i];s.classList.remove('ok','bad');s.classList.add(r?'ok':'bad');if(!r)ok=false});}
+  msg(el,ok,x);return ok;
+}
+function msg(el,ok,x){
+  const f=el.querySelector('.fbx');
+  if(ok===null){f.innerHTML='<div class="fb bad">Wähle zuerst eine Antwort.</div>';return null}
+  let extra='';
+  if(x.t==='match'&&!ok)extra=' Richtig wäre: '+x.l.map((l,i)=>esc(l)+' → '+esc(x.o[x.a[i]])).join('; ')+'.';
+  f.innerHTML='<div class="fb '+(ok?'ok':'bad')+'"><b>'+(ok?'Richtig!':'Noch nicht ganz.')+'</b> '+(x.e?esc(x.e):'')+extra+'</div>';
+  return ok;
+}
+function viewTopic(k){
+  const tp=T[k];const gs=GOALS.filter(g=>g[2]===k);
+  $('#main').innerHTML=`<h2>${tp.nr} ${tp.title}</h2><p class="lead">Grundlagenbuch ${tp.book} · Lernziele ${gs.map(g=>g[0]).join(', ')}</p>
+  <div class="box goalbox"><div class="goals">${gs.map(([n,lv,,tx])=>'<div><span class="stars">'+lv+'</span> '+n+'. Ich kann '+esc(tx)+'</div>').join('')}</div></div>
+  <div class="tabs" role="tablist"><button class="on" data-tab="th">Theorie</button><button data-tab="ex">Übungen (${tp.ex.length})</button><button data-tab="wr">Schreibauftrag</button></div>
+  <section id="th" class="box theory">${tp.theory}</section>
+  <section id="ex" hidden></section>
+  <section id="wr" hidden>${tp.w.map((w,i)=>'<div class="box write"><h3>Schreibauftrag '+(i+1)+'</h3><p>'+esc(w.q)+'</p><p style="font-size:.9rem;color:var(--muted)">Schreibe zuerst selbst in dein NT-Heft oder ins Feld. Vergleiche danach mit der Musterlösung.</p><textarea id="'+k+'w'+i+'" aria-label="Deine Antwort"></textarea><div class="row"><button class="btn sec" data-sol="'+k+'s'+i+'">Musterlösung zeigen</button></div><div class="sol" id="'+k+'s'+i+'" hidden>'+esc(w.a)+'</div></div>').join('')}</section>`;
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));['th','ex','wr'].forEach(s=>$('#'+s).hidden=s!==b.dataset.tab)}));
+  renderRound(k,false);
+  document.querySelectorAll('[data-sol]').forEach(b=>b.addEventListener('click',()=>{const s=document.getElementById(b.dataset.sol);s.hidden=!s.hidden;b.textContent=s.hidden?'Musterlösung zeigen':'Musterlösung verbergen'}));
+}
+const PER=6;const PRAC={};
+function renderRound(k,next){
+  const tp=T[k];const n=tp.ex.length;let st=PRAC[k];
+  if(!st){st=PRAC[k]={ord:shuffle(tp.ex.map((x,i)=>i)),pos:0,round:0,cur:null}}
+  if(next||!st.cur){
+    if(st.pos+PER>n){const rest=st.ord.slice(st.pos);st.ord=rest.concat(shuffle(tp.ex.map((x,i)=>i).filter(i=>!rest.includes(i))));st.pos=0;}
+    st.cur=st.ord.slice(st.pos,st.pos+PER);st.pos+=PER;st.round++;
+  }
+  const el=$('#ex');
+  el.innerHTML='<div class="round"><span><b>Runde '+st.round+'</b> · '+st.cur.length+' von '+n+' Übungen zu diesem Thema</span></div>'+st.cur.map((i,j)=>qHtml(tp.ex[i],k+'q'+i,j+1)).join('')+
+   '<div class="row"><button class="btn" id="allChk">Alle überprüfen</button><button class="btn sec" id="nextR">Neue Übungen →</button><a class="btn sec" href="#test" style="text-decoration:none">Zur Lernkontrolle →</a></div><div id="rres"></div>';
+  st.cur.forEach(i=>document.querySelector('[data-chk="'+k+'q'+i+'"]').addEventListener('click',()=>check(tp.ex[i],k+'q'+i)));
+  $('#allChk').addEventListener('click',()=>{let ok=0;st.cur.forEach(i=>{if(check(tp.ex[i],k+'q'+i)===true)ok++});$('#rres').innerHTML='<div class="fb '+(ok===st.cur.length?'ok':'bad')+'"><b>'+ok+' von '+st.cur.length+' richtig.</b> '+(ok===st.cur.length?'Super! Hol dir mit «Neue Übungen» weitere Aufgaben.':'Schau dir die Fehler an, lies die Theorie nochmals und versuche eine neue Runde.')+'</div>'});
+  $('#nextR').addEventListener('click',()=>{renderRound(k,true);$('#ex').scrollIntoView({behavior:'smooth',block:'start'})});
+}
+let TEST=[];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newTest(){
+  let pool=[];ORDER.forEach(k=>{pool=pool.concat(shuffle(T[k].ex.map(x=>Object.assign({tp:k},x))).slice(0,2))});
+  TEST=shuffle(pool.slice(0,18).concat(shuffle(CASES.map(x=>Object.assign({tp:'test'},x))).slice(0,4)));
+}
+function viewTest(){
+  if(!TEST.length)newTest();
+  $('#main').innerHTML=`<h2>Lernkontrolle</h2><p class="lead">${TEST.length} gemischte Aufgaben aus allen Themen, dazu Fallbeispiele (Lernziel 26). Löse alle Aufgaben und klicke dann unten auf «Auswerten». Mit «Neue Lernkontrolle» bekommst du andere Aufgaben.</p>
+  ${TEST.map((x,i)=>qHtml(x,'tq'+i,i+1)).join('')}
+  <div class="row"><button class="btn" id="eval">Auswerten</button><button class="btn sec" id="again">Neue Lernkontrolle</button></div><div id="res"></div>`;
+  TEST.forEach((x,i)=>document.querySelector('[data-chk="tq'+i+'"]').addEventListener('click',()=>check(x,'tq'+i)));
+  $('#again').addEventListener('click',()=>{newTest();viewTest();window.scrollTo(0,0)});
+  $('#eval').addEventListener('click',()=>{
+    let n=0,miss={},open=0;TEST.forEach((x,i)=>{const r=check(x,'tq'+i);if(r===true)n++;else{if(r===null)open++;const k=x.tp;miss[k]=(miss[k]||0)+1}});
+    const pct=Math.round(n/TEST.length*100);
+    const tips=Object.keys(miss).map(k=>'<a class="go" style="display:inline-block;margin:3px" href="#'+k+'">'+(k==='test'?'Fallbeispiele':T[k].nr+' '+T[k].title)+' ('+miss[k]+')</a>').join(' ');
+    $('#res').innerHTML='<div class="box" style="margin-top:16px"><div class="score">'+n+' / '+TEST.length+'</div><p style="margin:4px 0 10px">'+(pct>=80?'Sehr gut! Du bist gut vorbereitet.':pct>=60?'Gut! Wiederhole die Themen unten noch einmal.':'Übe die Themen unten nochmals mit Theorie und Übungen.')+(open?' ('+open+' Aufgaben nicht beantwortet.)':'')+'</p>'+(tips?'<div style="font-weight:600;margin-bottom:4px">Noch üben:</div>'+tips:'')+'</div>';
+    $('#res').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+function route(){
+  let h=(location.hash||'').slice(1);if(!T[h]&&h!=='test')h='lernziele';
+  nav(h);if(h==='lernziele')viewStart();else if(h==='test')viewTest();else viewTopic(h);
+  $('#side').classList.remove('open');$('#menuBtn').setAttribute('aria-expanded','false');window.scrollTo(0,0);
+}
+$('#menuBtn').addEventListener('click',()=>{const o=$('#side').classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',o)});
+window.addEventListener('hashchange',route);route();
+</script>
+
+</body>
+</html>
