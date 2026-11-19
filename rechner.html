@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pyramiden-Rechner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+body{margin:0}
+
+/* Layout: Kopfband mit Logo, links Eingabe des Tages nach Mahlzeiten, rechts Auswertung mit zwei Pyramiden und Ampel-Tabelle; auf dem Handy untereinander */
+:root{
+  --bg:#f4f7f2; --surface:#ffffff; --fg:#1d2a24; --muted:#5b6b62; --line:#d9e2d6;
+  --band:#1f4d3f; --band-fg:#ffffff; --accent:#8cb21f; --accent-ink:#4d6b00; --accent-soft:#eef5d9; --chip:#e8efe5;
+  --ok:#2e7d32; --ok-soft:#e5f3e6; --warn:#a86400; --warn-soft:#fdf0d8; --bad:#c62828; --bad-soft:#fbe7e7;
+  --l1:#8fcbed; --l2:#9fcf62; --l3:#efc95c; --l4:#e59a62; --l5:#e3cf7e; --l6:#d77f7f;
+  --f-head:"Bitter", Georgia, serif; --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121a16; --surface:#1b2520; --fg:#e6eee8; --muted:#a3b3aa; --line:#2e3c35;
+  --band:#163a2f; --band-fg:#f2f7f3; --accent:#a8cf3a; --accent-ink:#c6e66b; --accent-soft:#26331a; --chip:#24302a;
+  --ok:#7fd483; --ok-soft:#1c3320; --warn:#f2b552; --warn-soft:#3a2e15; --bad:#ff8a80; --bad-soft:#3a1e1e;
+  --l1:#5fa4cc; --l2:#79ab3f; --l3:#c9a33c; --l4:#c47843; --l5:#b9a55a; --l6:#b85e5e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a16; --surface:#1b2520; --fg:#e6eee8; --muted:#a3b3aa; --line:#2e3c35;
+  --band:#163a2f; --band-fg:#f2f7f3; --accent:#a8cf3a; --accent-ink:#c6e66b; --accent-soft:#26331a; --chip:#24302a;
+  --ok:#7fd483; --ok-soft:#1c3320; --warn:#f2b552; --warn-soft:#3a2e15; --bad:#ff8a80; --bad-soft:#3a1e1e;
+  --l1:#5fa4cc; --l2:#79ab3f; --l3:#c9a33c; --l4:#c47843; --l5:#b9a55a; --l6:#b85e5e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+header.top{background:var(--band);color:var(--band-fg)}
+.top-in{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:14px;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top h1{font-family:var(--f-head);font-size:1.35rem;margin:0;line-height:1.2}
+.top .sub{font-size:.8rem;opacity:.85;letter-spacing:.04em}
+.top .ttl{flex:1;min-width:0}
+.logo{background:#ffffff;border-radius:8px;padding:5px 9px;display:flex;flex-shrink:0}
+.logo img{height:30px;width:auto;display:block}
+.wrap{max-width:1220px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:24px;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px;min-width:0}
+h2{font-family:var(--f-head);font-size:1.25rem;margin:0 0 8px}
+h3{font-size:1rem;margin:14px 0 6px}
+.lead{color:var(--muted);margin:0 0 12px;font-size:.95rem}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;font-weight:600;color:var(--muted);min-width:0}
+.form .wide{grid-column:1/-1}
+select,input{font:inherit;font-size:1rem;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--fg);width:100%;min-width:0}
+.btn{font:inherit;font-weight:600;border:none;border-radius:7px;padding:9px 16px;cursor:pointer;background:var(--band);color:var(--band-fg)}
+.btn.sec{background:var(--chip);color:var(--fg)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.meal{margin-top:12px}
+.meal h3{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:3px}
+.meal h3 span{font-weight:400;color:var(--muted);font-size:.85rem}
+.item{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:.95rem}
+.item .nm{flex:1;min-width:0}
+.item .x{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0 6px}
+.item .dots{display:flex;gap:3px}
+.item .dots i{width:9px;height:9px;border-radius:2px;display:block}
+.empty{color:var(--muted);font-size:.9rem;font-style:italic}
+.pyrs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pyrs figure{margin:0;min-width:0}
+.pyrs figcaption{text-align:center;font-weight:700;font-family:var(--f-head);margin-bottom:4px}
+.pyrs svg{width:100%;height:auto;display:block}
+svg .lvl text{font:700 14px var(--f-body);fill:#1d2a24}
+svg .tgt{fill:none;stroke:var(--fg);stroke-dasharray:4 3;stroke-width:1.2}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;font-size:.85rem;margin-top:8px}
+.legend span{display:flex;gap:6px;align-items:center}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.93rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--chip);font-size:.85rem}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.st{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.st.ok{background:var(--ok-soft);color:var(--ok)} .st.lo{background:var(--warn-soft);color:var(--warn)} .st.hi{background:var(--bad-soft);color:var(--bad)}
+.note{font-size:.88rem;color:var(--muted)}
+.alert{background:var(--bad-soft);border-left:4px solid var(--bad);padding:8px 12px;border-radius:6px;font-size:.92rem;margin-top:10px}
+.foot{font-size:.8rem;color:var(--muted);margin-top:8px}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}.top h1{font-size:1.1rem}.logo img{height:24px}}
+@media (max-width:440px){.form{grid-template-columns:1fr}.pyrs{gap:6px}}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="top-in">
+  <div class="ttl"><div class="sub">NT · NaTech 8 · Kapitel 3.1 / 3.2 · Ernährung</div><h1>Pyramiden-Rechner: Was habe ich heute gegessen?</h1></div>
+  <div class="logo"><img alt="flade" src="data:image/png;base64,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"></div>
+</div></header>
+
+<div class="wrap">
+<section>
+  <div class="box">
+    <h2>1. Trage ein, was du gegessen und getrunken hast</h2>
+    <p class="lead">Wähle die Mahlzeit, das Lebensmittel oder Getränk und die Menge. Trage einen ganzen Tag ein, auch Snacks und Getränke.</p>
+    <div class="form">
+      <label for="meal">Mahlzeit<select id="meal"></select></label>
+      <label for="grp">Gruppe<select id="grp"></select></label>
+      <label class="wide" for="food">Lebensmittel / Getränk<select id="food"></select></label>
+      <label for="unit">Einheit<select id="unit"></select></label>
+      <label for="qty">Anzahl<input id="qty" type="number" min="0.5" step="0.5" value="1" inputmode="decimal"></label>
+    </div>
+    <div class="row"><button class="btn" id="add">+ Hinzufügen</button><button class="btn sec" id="demo">Beispieltag laden</button><button class="btn sec" id="clear">Alles löschen</button></div>
+    <div id="list"></div>
+  </div>
+</section>
+<section>
+  <div class="box">
+    <h2>2. Auswertung</h2>
+    <p class="lead">Links siehst du die empfohlene Pyramide für einen Tag, rechts deine Pyramide. Die gestrichelte Linie zeigt die Empfehlung. Ist ein Balken kürzer, hast du zu wenig davon gegessen, ist er länger, zu viel.</p>
+    <div class="pyrs"><figure><figcaption>Empfohlen</figcaption><div id="pyrA"></div></figure><figure><figcaption>Mein Tag</figcaption><div id="pyrB"></div></figure></div>
+    <div class="legend" id="legend"></div>
+    <div id="alerts"></div>
+  </div>
+  <div class="box">
+    <h2>3. Stufe für Stufe</h2>
+    <div class="tblwrap"><table id="tbl"></table></div>
+    <p class="foot">Grundlage: Schweizer Ernährungsempfehlungen (BLV/SGE, 2024) für gesunde Erwachsene. Für Jugendliche gelten ähnliche Mengen, wer viel Sport macht, braucht mehr Getreideprodukte und Getränke. Die Portionen der Lebensmittel sind gerundete Richtwerte, Gerichte wie Pizza oder Döner sind auf die Stufen aufgeteilt. Es werden keine Daten gespeichert oder verschickt.</p>
+  </div>
+</section>
+</div>
+
+<script>
+/* Stufen: Empfehlung pro Tag in Portionen */
+const LV=[
+ {k:'getr',n:'Ungesüsste Getränke',u:'Glas (2,5 dl)',tgt:6,lo:4,hi:10,c:'--l1',tipLo:'Trinke mehr Wasser oder ungesüssten Tee: 1 bis 2 Liter pro Tag (4 bis 8 Gläser).',tipHi:'Viel getrunken. Das ist in Ordnung, vor allem bei Sport oder Hitze.'},
+ {k:'gf',n:'Gemüse und Früchte',u:'Portion (120 g)',tgt:5,lo:4.5,hi:99,c:'--l2',tipLo:'Iss mehr Gemüse und Früchte: 5 Portionen pro Tag, davon 3 Gemüse. Eine Portion ist etwa eine Handvoll.',tipHi:''},
+ {k:'korn',n:'Getreide und Kartoffeln',u:'Portion',tgt:3,lo:2,hi:5,c:'--l3',tipLo:'Zu jeder Hauptmahlzeit gehört eine Portion Brot, Teigwaren, Reis, Kartoffeln oder Flocken, am besten Vollkorn.',tipHi:'Recht viel. Bei viel Sport ist mehr in Ordnung, sonst lieber mehr Gemüse.'},
+ {k:'milch',n:'Milch und Milchprodukte',u:'Portion',tgt:3,lo:2,hi:4,c:'--l4',tipLo:'2 bis 3 Portionen pro Tag, z. B. ein Glas Milch, ein Joghurt und ein Stück Käse.',tipHi:'Etwas viel Milchprodukte. 2 bis 3 Portionen reichen.'},
+ {k:'prot',n:'Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte',u:'Portion',tgt:1,lo:0.5,hi:2,c:'--l4b',tipLo:'1 Portion pro Tag: abwechseln zwischen Hülsenfrüchten, Eiern, Fisch, Tofu und Fleisch.',tipHi:'Mehr als nötig. 1 Portion pro Tag reicht, Fleisch höchstens 2- bis 3-mal pro Woche.'},
+ {k:'fett',n:'Öle, Fette und Nüsse',u:'Portion (10 g Öl / 20 g Nüsse)',tgt:3,lo:1,hi:5,c:'--l5',tipLo:'Etwas Öl (z. B. Rapsöl) und eine kleine Handvoll Nüsse pro Tag gehören dazu.',tipHi:'Viel Fett: oft steckt es versteckt in Pommes, Chips, Gebäck, Saucen und Fastfood.'},
+ {k:'suess',n:'Süsses, Salziges, Süssgetränke',u:'Portion (20 g / 2 dl)',tgt:1,lo:-1,hi:1.5,c:'--l6',tipLo:'',tipHi:'Zu viel Süsses, Salziges oder Süssgetränke. Empfohlen ist höchstens 1 kleine Portion pro Tag.'}
+];
+/* Lebensmittel: c = Portionen pro Grundeinheit; u = Einheiten [Bezeichnung, Faktor] */
+const G=['Getränke','Gemüse und Früchte','Brot, Getreide, Kartoffeln','Milchprodukte','Fleisch, Fisch, Eier, Tofu, Hülsenfrüchte','Fette, Öle, Nüsse','Süsses und Salziges','Gerichte und Fastfood'];
+const F=[
+['Wasser / Mineralwasser',0,{getr:1},[['1 Glas (2,5 dl)',1],['1 Flasche (5 dl)',2],['1 Liter',4]]],
+['Tee ungesüsst',0,{getr:1},[['1 Tasse / Glas (2,5 dl)',1],['1 Liter',4]]],
+['Kaffee',0,{getr:0.5},[['1 Tasse',1]]],
+['Cola, Limonade (mit Zucker)',0,{suess:1.25},[['1 Glas (2,5 dl)',1],['1 Dose (3,3 dl)',1.32],['1 Flasche (5 dl)',2],['1 Flasche (1,5 l)',6]]],
+['Cola Zero / Light',0,{getr:1},[['1 Glas (2,5 dl)',1],['1 Dose (3,3 dl)',1.32],['1 Flasche (5 dl)',2]]],
+['Eistee',0,{suess:1.25},[['1 Glas (2,5 dl)',1],['1 Flasche (5 dl)',2],['1 Packung (1 l)',4]]],
+['Energy-Drink',0,{suess:1.25},[['1 Dose (2,5 dl)',1],['1 grosse Dose (5 dl)',2]],'energy'],
+['Sirup (verdünnt)',0,{suess:1,getr:0.5},[['1 Glas (2,5 dl)',1]]],
+['Sportgetränk (z. B. Isotonic)',0,{suess:1,getr:0.5},[['1 Flasche (5 dl)',2],['1 Glas (2,5 dl)',1]]],
+['Fruchtsaft / Orangensaft',0,{fsaft:1},[['1 Glas (2 dl)',1],['1 Flasche (5 dl)',2.5]]],
+['Smoothie',0,{fsaft:1.25},[['1 Flasche (2,5 dl)',1]]],
+['Milch',0,{milch:1},[['1 Glas (2 dl)',1],['1 Tasse (2,5 dl)',1.25],['5 dl',2.5]]],
+['Schoggidrink / Kakao',0,{milch:1,suess:1},[['1 Tasse / Glas (2,5 dl)',1],['1 Packung (5 dl)',2]]],
+['Milchshake',0,{milch:1,suess:1.5},[['1 Becher (3 dl)',1]]],
+['Apfel',1,{gf:1.25},[['1 Apfel',1]]],
+['Banane',1,{gf:1},[['1 Banane',1]]],
+['Birne',1,{gf:1.4},[['1 Birne',1]]],
+['Orange',1,{gf:1.25},[['1 Orange',1]]],
+['Mandarine / Clementine',1,{gf:0.6},[['1 Stück',1]]],
+['Beeren / Trauben',1,{gf:1},[['1 Schälchen / Handvoll (120 g)',1]]],
+['Kiwi',1,{gf:0.6},[['1 Kiwi',1]]],
+['Früchte gemischt',1,{gf:1},[['1 Portion (120 g)',1]]],
+['Rüebli (Karotte)',1,{gf:0.7},[['1 Rüebli',1]]],
+['Tomate',1,{gf:0.8},[['1 Tomate',1],['Cherrytomaten (Handvoll)',0.8]]],
+['Gurke',1,{gf:1.25},[['½ Gurke',1]]],
+['Peperoni / Gemüsesticks',1,{gf:1},[['1 Portion (120 g)',1]]],
+['Salat (Beilage)',1,{gf:0.7,fett:1},[['1 Teller mit Sauce',1]]],
+['Gemüse gekocht (Beilage)',1,{gf:1.25},[['1 Portion (150 g)',1]]],
+['Gemüsesuppe',1,{gf:1,fett:0.5},[['1 Teller',1]]],
+['Brot / Vollkornbrot',2,{korn:0.5},[['1 Scheibe (50 g)',1],['1 Brötli (80 g)',1.6]]],
+['Toastbrot',2,{korn:0.25},[['1 Scheibe',1]]],
+['Zopf',2,{korn:0.4,fett:0.3},[['1 Scheibe',1]]],
+['Gipfeli',2,{korn:0.5,fett:1},[['1 Gipfeli',1]]],
+['Haferflocken / Müesli ungesüsst',2,{korn:1},[['1 Schale (60 g)',1],['½ Schale (30 g)',0.5]]],
+['Cornflakes / Schoko-Flocken',2,{korn:0.7,suess:0.6},[['1 Schale (40 g)',1]]],
+['Teigwaren (gekocht)',2,{korn:1},[['1 Teller',1],['½ Teller',0.5],['1 grosser Teller',1.5]]],
+['Reis (gekocht)',2,{korn:1},[['1 Teller',1],['½ Teller',0.5]]],
+['Kartoffeln (gekocht)',2,{korn:1},[['1 Portion (3 mittlere)',1]]],
+['Kartoffelstock',2,{korn:1,milch:0.3,fett:0.5},[['1 Portion',1]]],
+['Pommes frites',2,{korn:0.6,fett:1.5,suess:0.5},[['1 Portion mittel',1],['1 grosse Portion',1.5]]],
+['Rösti',2,{korn:1,fett:2},[['1 Portion',1]]],
+['Joghurt nature',3,{milch:1},[['1 Becher (180 g)',1]]],
+['Fruchtjoghurt',3,{milch:1,suess:0.7},[['1 Becher (180 g)',1]]],
+['Quark / Hüttenkäse',3,{milch:1},[['1 Portion (150 g)',1]]],
+['Käse (Hartkäse)',3,{milch:1},[['1 Stück (30 g)',1],['1 Scheibe (20 g)',0.66]]],
+['Mozzarella / Weichkäse',3,{milch:1},[['½ Kugel / 60 g',1]]],
+['Pudding / Creme',3,{milch:0.6,suess:1},[['1 Becher',1]]],
+['Poulet / Fleisch (Stück)',4,{prot:1},[['1 Stück (120 g)',1],['½ Stück',0.5]]],
+['Hackfleisch',4,{prot:1,fett:0.5},[['1 Portion (100 g)',1]]],
+['Wurst (z. B. Cervelat, Bratwurst)',4,{prot:1,fett:1.5,suess:0.3},[['1 Wurst',1]]],
+['Schinken',4,{prot:0.2},[['1 Scheibe',1]]],
+['Salami',4,{prot:0.3,fett:0.8},[['3 Scheiben',1]]],
+['Fisch',4,{prot:1},[['1 Filet (120 g)',1]]],
+['Fischstäbchen',4,{prot:0.8,korn:0.2,fett:0.7},[['4 Stück',1]]],
+['Thon (Dose)',4,{prot:0.7},[['1 kleine Dose',1]]],
+['Ei',4,{prot:0.4},[['1 Ei',1]]],
+['Tofu / Tempeh',4,{prot:1},[['1 Portion (120 g)',1]]],
+['Linsen, Bohnen, Kichererbsen (gekocht)',4,{prot:1},[['1 Portion (150 g)',1]]],
+['Chicken Nuggets',4,{prot:0.7,korn:0.3,fett:1},[['6 Stück',1],['9 Stück',1.5]]],
+['Öl (Salat, Kochen)',5,{fett:1},[['1 Esslöffel',1]]],
+['Butter / Margarine',5,{fett:1},[['1 Portion fürs Brot (10 g)',1]]],
+['Nüsse / Kerne',5,{fett:1},[['1 kleine Handvoll (20 g)',1],['1 grosse Handvoll (40 g)',2]]],
+['Erdnussbutter',5,{fett:1},[['1 Esslöffel',1]]],
+['Mayonnaise / Ketchup-Mayo',5,{fett:1.5},[['1 Esslöffel',1]]],
+['Rahmsauce',5,{fett:2},[['1 Portion',1]]],
+['Schokolade',6,{suess:1.25},[['1 Reihe (25 g)',1],['1 Tafel (100 g)',4]]],
+['Gummibärchen / Süssigkeiten',6,{suess:1},[['1 Handvoll (20 g)',1],['1 Beutel (100 g)',5]]],
+['Guetzli',6,{suess:1},[['2 Stück',1]]],
+['Glace',6,{suess:1,milch:0.2},[['1 Kugel',1],['1 Glace am Stiel',1.2]]],
+['Kuchen / Torte',6,{suess:2,korn:0.5,fett:1},[['1 Stück',1]]],
+['Schoggibrötli / Croissant mit Füllung',6,{suess:1,korn:0.5,fett:1},[['1 Stück',1]]],
+['Konfitüre / Honig / Nutella',6,{suess:1},[['1 Esslöffel',1]]],
+['Chips',6,{suess:1.5,fett:1},[['1 kleine Packung (30 g)',1],['1 grosse Packung (150 g)',5]]],
+['Salzstängeli / Cracker',6,{suess:1},[['1 Handvoll (20 g)',1]]],
+['Müesliriegel',6,{suess:0.8,korn:0.3},[['1 Riegel',1]]],
+['Pizza',7,{korn:2,milch:1.5,gf:0.5,fett:1.5,suess:0.5},[['1 ganze Pizza',1],['½ Pizza',0.5],['1 Stück (⅛)',0.125]]],
+['Döner Kebab',7,{korn:1.5,prot:1,gf:0.5,fett:1.5,suess:0.5},[['1 Döner',1]]],
+['Burger (Fastfood)',7,{korn:1,prot:0.8,gf:0.2,fett:1.5,suess:0.5},[['1 Burger',1]]],
+['Hotdog',7,{korn:0.6,prot:0.5,fett:1,suess:0.5},[['1 Hotdog',1]]],
+['Spaghetti Bolognese',7,{korn:1,prot:0.6,gf:0.5,fett:0.5},[['1 Teller',1]]],
+['Lasagne',7,{korn:1,prot:0.6,milch:0.8,gf:0.3,fett:1},[['1 Portion',1]]],
+['Älplermagronen / Mac and Cheese',7,{korn:1,milch:1,fett:1.5},[['1 Teller',1]]],
+['Sandwich Schinken-Käse',7,{korn:1,prot:0.3,milch:0.5,fett:1},[['1 Sandwich',1]]],
+['Sushi',7,{korn:1,prot:0.5,gf:0.2},[['8 Stück',1]]],
+['Birchermüesli',7,{korn:0.7,milch:0.7,gf:0.7,suess:0.3},[['1 Schale',1]]],
+['Wähe / Quiche',7,{korn:0.7,milch:0.5,gf:0.5,fett:1.5},[['1 Stück',1]]],
+['Curry mit Reis',7,{korn:1,prot:0.8,gf:0.8,fett:1},[['1 Teller',1]]]
+];
+const MEALS=['Morgenessen','Znüni','Mittagessen','Zvieri','Abendessen','Zwischendurch / Abends'];
+const DEMO=[[0,'Cornflakes / Schoko-Flocken',0,1],[0,'Milch',0,1],[0,'Fruchtsaft / Orangensaft',0,1],[1,'Schoggibrötli / Croissant mit Füllung',0,1],[1,'Eistee',1,1],[2,'Döner Kebab',0,1],[2,'Cola, Limonade (mit Zucker)',1,1],[3,'Chips',0,1],[3,'Apfel',0,1],[4,'Spaghetti Bolognese',0,1],[4,'Salat (Beilage)',0,1],[4,'Wasser / Mineralwasser',0,2],[5,'Gummibärchen / Süssigkeiten',0,1]];
+const $=s=>document.querySelector(s);
+let ENTRIES=[];
+try{ENTRIES=JSON.parse(localStorage.getItem('pyr-entries')||'[]')||[]}catch(e){ENTRIES=[]}
+function save(){try{localStorage.setItem('pyr-entries',JSON.stringify(ENTRIES))}catch(e){}}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function fmt(v){const r=Math.round(v*2)/2;return (r%1?r.toFixed(1):String(r)).replace('.',',')}
+/* Formular */
+$('#meal').innerHTML=MEALS.map((m,i)=>'<option value="'+i+'">'+m+'</option>').join('');
+$('#grp').innerHTML=G.map((g,i)=>'<option value="'+i+'">'+g+'</option>').join('');
+function fillFood(){const g=+$('#grp').value;$('#food').innerHTML=F.map((f,i)=>[f,i]).filter(([f])=>f[1]===g).map(([f,i])=>'<option value="'+i+'">'+esc(f[0])+'</option>').join('');fillUnit()}
+function fillUnit(){const f=F[+$('#food').value];$('#unit').innerHTML=f[3].map((u,i)=>'<option value="'+i+'">'+esc(u[0])+'</option>').join('')}
+$('#grp').addEventListener('change',fillFood);$('#food').addEventListener('change',fillUnit);fillFood();
+$('#add').addEventListener('click',()=>{const q=parseFloat(String($('#qty').value).replace(',','.'));if(!(q>0))return;ENTRIES.push({m:+$('#meal').value,f:F[+$('#food').value][0],u:+$('#unit').value,q});save();render()});
+$('#demo').addEventListener('click',()=>{ENTRIES=DEMO.map(([m,f,u,q])=>({m,f,u,q}));save();render()});
+$('#clear').addEventListener('click',()=>{ENTRIES=[];save();render()});
+/* Rechnen */
+function contrib(e){const f=F.find(x=>x[0]===e.f);if(!f)return {};const fac=(f[3][e.u]||f[3][0])[1]*e.q;const o={};for(const k in f[2])o[k]=(o[k]||0)+f[2][k]*fac;return o}
+function totals(){const t={getr:0,gf:0,korn:0,milch:0,prot:0,fett:0,suess:0,fsaft:0};ENTRIES.forEach(e=>{const c=contrib(e);for(const k in c)t[k]+=c[k]});
+  /* Fruchtsaft: max. 1 Portion zählt zu den Früchten, der Rest gilt als Süssgetränk */
+  const fs=t.fsaft;t.gf+=Math.min(fs,1);t.suess+=Math.max(0,fs-1);return t}
+function status(L,v){if(L.k==='suess')return v<=1.0001?'ok':'hi';if(v<L.lo-0.001)return 'lo';if(v>L.hi+0.001)return 'hi';return 'ok'}
+/* Pyramiden zeichnen */
+function pyr(t,mine){const W=260,H=300,top=8,n=LV.length;const rowH=H/n;let s='<svg viewBox="0 0 '+W+' '+(H+top+4)+'" role="img" aria-label="'+(mine?'Meine Pyramide':'Empfohlene Pyramide')+'">';
+  // Ebenen von unten (Getränke) nach oben (Süsses); Milch und Proteine teilen sich eine Ebene
+  const rows=[['getr'],['gf'],['korn'],['milch','prot'],['fett'],['suess']];const nr=rows.length;const rh=H/nr;
+  rows.forEach((keys,ri)=>{const y=top+H-(ri+1)*rh,full=(W-20)*(1-ri/nr)*0.95+16;const cx=W/2;
+    const parts=keys.map(k=>LV.find(l=>l.k===k));const tot=parts.reduce((a,p)=>a+p.tgt,0);
+    let x0=cx-full/2;
+    parts.forEach(p=>{const w0=full*p.tgt/tot;const ratio=mine?Math.min((t[p.k]||0)/p.tgt,2.2):1;const w=Math.max(mine?2:0,w0*ratio);const bx=keys.length===1?cx-w/2:(p.k==='milch'?x0+w0-w:x0);
+      s+='<g class="lvl"><rect x="'+bx.toFixed(1)+'" y="'+(y+3).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(rh-6).toFixed(1)+'" rx="6" fill="var('+p.c.replace('--l4b','--l4')+')" '+(p.k==='prot'?'opacity="0.75"':'')+'/>';
+      if(mine)s+='<rect class="tgt" x="'+(keys.length===1?cx-w0/2:x0).toFixed(1)+'" y="'+(y+3).toFixed(1)+'" width="'+w0.toFixed(1)+'" height="'+(rh-6).toFixed(1)+'" rx="6"/>';
+      const lab=mine?fmt(t[p.k]||0):String(p.tgt).replace('.',',');const tx=keys.length===1?cx:(x0+w0/2);
+      s+='<text x="'+tx.toFixed(1)+'" y="'+(y+rh/2+4).toFixed(1)+'" text-anchor="middle">'+lab+'</text></g>';x0+=w0;});
+  });return s+'</svg>'}
+function render(){
+  // Liste
+  let h='';MEALS.forEach((m,mi)=>{const es=ENTRIES.map((e,i)=>[e,i]).filter(([e])=>e.m===mi);if(!es.length)return;
+    h+='<div class="meal"><h3>'+m+'<span>'+es.length+' Einträge</span></h3>'+es.map(([e,i])=>{const f=F.find(x=>x[0]===e.f);const u=f?(f[3][e.u]||f[3][0])[0]:'';const c=contrib(e);
+      const dots=Object.keys(c).map(k=>{const L=LV.find(l=>l.k===(k==='fsaft'?'gf':k));return L?'<i style="background:var('+L.c.replace('--l4b','--l4')+')" title="'+L.n+'"></i>':''}).join('');
+      return '<div class="item"><span class="nm"><b>'+esc(e.f)+'</b> · '+(e.q===1?'':fmt(e.q)+' × ')+esc(u)+'</span><span class="dots">'+dots+'</span><button class="x" data-i="'+i+'" aria-label="Eintrag löschen">×</button></div>'}).join('')+'</div>'});
+  $('#list').innerHTML=h||'<p class="empty">Noch nichts eingetragen. Füge oben deine erste Mahlzeit hinzu oder lade den Beispieltag.</p>';
+  document.querySelectorAll('.item .x').forEach(b=>b.addEventListener('click',()=>{ENTRIES.splice(+b.dataset.i,1);save();render()}));
+  // Auswertung
+  const t=totals();$('#pyrA').innerHTML=pyr(t,false);$('#pyrB').innerHTML=pyr(t,true);
+  $('#legend').innerHTML=LV.map(L=>'<span><i style="background:var('+L.c.replace('--l4b','--l4')+');'+(L.k==='prot'?'opacity:.75':'')+'"></i>'+L.n+'</span>').join('');
+  const lab={ok:'passt',lo:'zu wenig',hi:'zu viel'};
+  $('#tbl').innerHTML='<tr><th>Stufe</th><th>Empfohlen</th><th>Du</th><th>Bewertung</th></tr>'+LV.slice().reverse().map(L=>{const v=t[L.k]||0;const st=ENTRIES.length?status(L,v):'';
+    const rec=L.k==='suess'?'höchstens 1':L.k==='getr'?'4–8 Gläser (1–2 l)':L.k==='milch'?'2–3':String(L.tgt);
+    const tip=st==='lo'?L.tipLo:st==='hi'?L.tipHi:'';
+    return '<tr><td><b>'+L.n+'</b><br><span class="note">'+L.u+'</span></td><td class="num">'+rec+'</td><td class="num">'+fmt(v)+'</td><td>'+(st?'<span class="st '+st+'">'+lab[st]+'</span>':'–')+(tip?'<div class="note">'+tip+'</div>':'')+'</td></tr>'}).join('');
+  // Hinweise
+  let al='';if(ENTRIES.some(e=>{const f=F.find(x=>x[0]===e.f);return f&&f[4]==='energy'}))al+='<div class="alert"><b>Energy-Drinks</b> enthalten viel Zucker und Koffein. Für Kinder und Jugendliche werden sie nicht empfohlen.</div>';
+  if(t.fsaft>1)al+='<div class="alert"><b>Fruchtsaft:</b> Nur 1 Glas (2 dl) pro Tag zählt als Portion Früchte. Mehr Saft zählt wegen des vielen Zuckers zu den Süssgetränken.</div>';
+  $('#alerts').innerHTML=al;
+}
+render();
+</script>
+
+</body>
+</html>
